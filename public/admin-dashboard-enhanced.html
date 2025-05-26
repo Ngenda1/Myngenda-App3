@@ -1,0 +1,2297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Myngenda - Admin Dashboard</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary-color: #9c27b0; /* Purple for admin */
+      --primary-dark: #7b1fa2;
+      --secondary-color: #2ecc71;
+      --secondary-dark: #27ae60;
+      --accent-color: #f39c12;
+      --text-color: #333;
+      --light-bg: #f8f9fa;
+      --border-radius: 8px;
+      --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      --transition: all 0.3s ease;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f5f5f5;
+      color: var(--text-color);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .navbar-brand {
+      font-weight: bold;
+      font-size: 1.5rem;
+    }
+    
+    .navbar-brand span {
+      color: var(--primary-color);
+    }
+    
+    .sidebar {
+      background-color: white;
+      box-shadow: var(--box-shadow);
+      height: calc(100vh - 56px);
+      position: fixed;
+      width: 250px;
+      z-index: 100;
+      transition: var(--transition);
+      overflow-y: auto;
+    }
+    
+    .sidebar-header {
+      padding: 1.5rem 1rem;
+      border-bottom: 1px solid #e9ecef;
+    }
+    
+    .sidebar-header img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-right: 0.75rem;
+    }
+    
+    .sidebar-header h5 {
+      margin-bottom: 0;
+      font-weight: 600;
+    }
+    
+    .sidebar-header p {
+      margin-bottom: 0;
+      color: #6c757d;
+      font-size: 0.875rem;
+    }
+    
+    .nav-link {
+      padding: 0.75rem 1rem;
+      color: var(--text-color);
+      border-radius: 0;
+      transition: var(--transition);
+    }
+    
+    .nav-link:hover, .nav-link.active {
+      background-color: rgba(156, 39, 176, 0.1);
+      color: var(--primary-color);
+    }
+    
+    .nav-link i {
+      margin-right: 0.75rem;
+      width: 20px;
+      text-align: center;
+    }
+    
+    .main-content {
+      margin-left: 250px;
+      padding: 2rem;
+      transition: var(--transition);
+    }
+    
+    .card {
+      border: none;
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      transition: var(--transition);
+      margin-bottom: 1.5rem;
+    }
+    
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .card-header {
+      background-color: white;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+      font-weight: 600;
+      padding: 1rem 1.25rem;
+    }
+    
+    .card-header i {
+      color: var(--primary-color);
+      margin-right: 0.5rem;
+    }
+    
+    .stats-card {
+      padding: 1.5rem;
+      text-align: center;
+      height: 100%;
+    }
+    
+    .stats-card i {
+      font-size: 2.5rem;
+      color: var(--primary-color);
+      margin-bottom: 1rem;
+    }
+    
+    .stats-card h3 {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+    
+    .stats-card p {
+      color: #6c757d;
+      margin-bottom: 0;
+    }
+    
+    .action-card {
+      background-color: var(--primary-color);
+      color: white;
+      padding: 1.5rem;
+      border-radius: var(--border-radius);
+      margin-bottom: 1.5rem;
+      transition: var(--transition);
+    }
+    
+    .action-card:hover {
+      background-color: var(--primary-dark);
+      transform: translateY(-5px);
+    }
+    
+    .action-card h4 {
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+    
+    .action-card p {
+      margin-bottom: 1.5rem;
+      opacity: 0.9;
+    }
+    
+    .btn-light {
+      background-color: white;
+      color: var(--primary-color);
+      font-weight: 500;
+      padding: 0.5rem 1rem;
+      border-radius: var(--border-radius);
+      transition: var(--transition);
+    }
+    
+    .btn-light:hover {
+      background-color: #f8f9fa;
+      transform: translateY(-2px);
+    }
+    
+    .btn-primary {
+      background-color: var(--primary-color);
+      border-color: var(--primary-color);
+    }
+    
+    .btn-primary:hover, .btn-primary:focus {
+      background-color: var(--primary-dark);
+      border-color: var(--primary-dark);
+    }
+    
+    .package-card {
+      margin-bottom: 1rem;
+      border-radius: var(--border-radius);
+      overflow: hidden;
+    }
+    
+    .package-card .card-body {
+      padding: 1.25rem;
+    }
+    
+    .package-status {
+      padding: 0.25rem 0.5rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      text-transform: uppercase;
+    }
+    
+    .status-pending {
+      background-color: #ffeeba;
+      color: #856404;
+    }
+    
+    .status-transit {
+      background-color: #b8daff;
+      color: #004085;
+    }
+    
+    .status-delivered {
+      background-color: #c3e6cb;
+      color: #155724;
+    }
+    
+    .package-date {
+      font-size: 0.875rem;
+      color: #6c757d;
+    }
+    
+    .package-eta {
+      font-weight: 500;
+    }
+    
+    .form-floating {
+      margin-bottom: 1rem;
+    }
+    
+    @media (max-width: 992px) {
+      .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+      }
+      
+      .main-content {
+        margin-left: 0;
+        padding: 1.5rem;
+      }
+      
+      .sidebar-nav {
+        display: flex;
+        flex-wrap: wrap;
+      }
+      
+      .nav-link {
+        padding: 0.5rem 1rem;
+        margin-right: 0.5rem;
+        margin-bottom: 0.5rem;
+        border-radius: var(--border-radius);
+      }
+    }
+    
+    /* Quick Actions Section */
+    .quick-actions {
+      margin-bottom: 2rem;
+    }
+    
+    .quick-action-item {
+      background-color: white;
+      border-radius: var(--border-radius);
+      padding: 1.25rem;
+      box-shadow: var(--box-shadow);
+      text-align: center;
+      transition: var(--transition);
+      height: 100%;
+    }
+    
+    .quick-action-item:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .quick-action-icon {
+      font-size: 2rem;
+      color: var(--primary-color);
+      margin-bottom: 1rem;
+    }
+    
+    .quick-action-title {
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+    
+    .quick-action-description {
+      color: #6c757d;
+      font-size: 0.875rem;
+      margin-bottom: 1rem;
+    }
+    
+    /* Loading Spinner */
+    .spinner-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 200px;
+    }
+    
+    .spinner {
+      width: 3rem;
+      height: 3rem;
+      color: var(--primary-color);
+    }
+    
+    /* Package Item */
+    .package-item {
+      border-left: 4px solid var(--primary-color);
+      background-color: white;
+      border-radius: var(--border-radius);
+      margin-bottom: 1rem;
+      padding: 1rem;
+      box-shadow: var(--box-shadow);
+      transition: var(--transition);
+    }
+    
+    .package-item:hover {
+      transform: translateX(5px);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    }
+    
+    .package-item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+    
+    .package-item-name {
+      font-weight: 600;
+      font-size: 1.1rem;
+      margin-bottom: 0;
+    }
+    
+    .package-item-details {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .package-item-detail {
+      display: flex;
+      align-items: center;
+    }
+    
+    .package-item-detail i {
+      color: var(--primary-color);
+      margin-right: 0.5rem;
+    }
+    
+    /* Content Sections */
+    .content-section {
+      display: none;
+    }
+    
+    .content-section.active {
+      display: block;
+    }
+    
+    /* Map styles */
+    .map-container {
+      height: 400px;
+      border-radius: var(--border-radius);
+      overflow: hidden;
+      margin-bottom: 1.5rem;
+    }
+    
+    /* User tables */
+    .table th {
+      font-weight: 600;
+    }
+    
+    .user-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+    
+    /* Analytics section */
+    .analytics-card {
+      height: 300px;
+    }
+    
+    /* User filters */
+    .filter-badge {
+      background-color: var(--light-bg);
+      color: var(--text-color);
+      padding: 0.5rem 0.75rem;
+      border-radius: 50px;
+      margin-right: 0.5rem;
+      margin-bottom: 0.5rem;
+      display: inline-block;
+      font-size: 0.875rem;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    
+    .filter-badge:hover, .filter-badge.active {
+      background-color: var(--primary-color);
+      color: white;
+    }
+    
+    /* System status indicators */
+    .status-indicator {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      display: inline-block;
+      margin-right: 0.5rem;
+    }
+    
+    .status-green {
+      background-color: #28a745;
+    }
+    
+    .status-yellow {
+      background-color: #ffc107;
+    }
+    
+    .status-red {
+      background-color: #dc3545;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+    <div class="container-fluid px-4">
+      <a class="navbar-brand" href="/">
+        <img src="https://raw.githubusercontent.com/yourusername/myngenda/main/assets/logo.png" alt="Myngenda Logo" height="35">
+        Myngenda <span>Delivery Services</span>
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+              <i class="fas fa-user-circle me-1"></i>
+              <span id="user-name">Admin</span>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i>Profile</a></li>
+              <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i>Settings</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="#" id="logout-btn"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="sidebar-header d-flex align-items-center">
+      <img src="https://ui-avatars.com/api/?name=A&background=9c27b0&color=fff" alt="User Avatar" id="user-avatar">
+      <div>
+        <h5 id="sidebar-user-name">Admin</h5>
+        <p id="user-role">Administrator</p>
+      </div>
+    </div>
+    <ul class="nav flex-column sidebar-nav">
+      <li class="nav-item">
+        <a class="nav-link active" href="#dashboard" data-section="dashboard-section">
+          <i class="fas fa-tachometer-alt"></i>Dashboard
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#users" data-section="users-section">
+          <i class="fas fa-users"></i>Users
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#packages" data-section="packages-section">
+          <i class="fas fa-box"></i>Packages
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#drivers" data-section="drivers-section">
+          <i class="fas fa-truck"></i>Drivers
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#analytics" data-section="analytics-section">
+          <i class="fas fa-chart-line"></i>Analytics
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#settings" data-section="settings-section">
+          <i class="fas fa-cog"></i>Settings
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#system" data-section="system-section">
+          <i class="fas fa-server"></i>System
+        </a>
+      </li>
+      <li class="nav-item mt-4">
+        <a class="nav-link text-danger" href="#" id="sidebar-logout-btn">
+          <i class="fas fa-sign-out-alt"></i>Logout
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <!-- Quick Actions Section -->
+    <section class="quick-actions mb-4">
+      <h4 class="mb-3">Quick Actions</h4>
+      <div class="row g-3">
+        <div class="col-md-3">
+          <div class="quick-action-item">
+            <div class="quick-action-icon">
+              <i class="fas fa-user-plus"></i>
+            </div>
+            <h5 class="quick-action-title">Add User</h5>
+            <p class="quick-action-description">Create a new user account</p>
+            <button class="btn btn-primary btn-sm quick-action-btn" data-action="add-user">Add Now</button>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="quick-action-item">
+            <div class="quick-action-icon">
+              <i class="fas fa-truck"></i>
+            </div>
+            <h5 class="quick-action-title">Assign Driver</h5>
+            <p class="quick-action-description">Assign drivers to packages</p>
+            <button class="btn btn-primary btn-sm quick-action-btn" data-action="assign-driver">Assign Now</button>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="quick-action-item">
+            <div class="quick-action-icon">
+              <i class="fas fa-chart-pie"></i>
+            </div>
+            <h5 class="quick-action-title">View Reports</h5>
+            <p class="quick-action-description">Access delivery analytics</p>
+            <button class="btn btn-primary btn-sm quick-action-btn" data-action="view-reports">View Now</button>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="quick-action-item">
+            <div class="quick-action-icon">
+              <i class="fas fa-cog"></i>
+            </div>
+            <h5 class="quick-action-title">System Settings</h5>
+            <p class="quick-action-description">Configure system parameters</p>
+            <button class="btn btn-primary btn-sm quick-action-btn" data-action="system-settings">Configure</button>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Dashboard Section -->
+    <section id="dashboard-section" class="content-section active">
+      <h3 class="mb-4">Admin Dashboard</h3>
+      
+      <div class="row mb-4">
+        <div class="col-md-3">
+          <div class="card h-100">
+            <div class="stats-card">
+              <i class="fas fa-users"></i>
+              <h3 id="total-users-count">142</h3>
+              <p>Total Users</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card h-100">
+            <div class="stats-card">
+              <i class="fas fa-truck"></i>
+              <h3 id="active-drivers-count">38</h3>
+              <p>Active Drivers</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card h-100">
+            <div class="stats-card">
+              <i class="fas fa-box"></i>
+              <h3 id="daily-packages-count">64</h3>
+              <p>Today's Packages</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card h-100">
+            <div class="stats-card">
+              <i class="fas fa-money-bill-wave"></i>
+              <h3 id="revenue-count">₦156K</h3>
+              <p>Revenue (This Month)</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="row">
+        <div class="col-lg-8">
+          <div class="card mb-4">
+            <div class="card-header">
+              <i class="fas fa-map-marked-alt"></i> Delivery Operations
+            </div>
+            <div class="card-body p-0">
+              <div class="map-container" id="operations-map">
+                <!-- Map will be loaded here -->
+                <img src="https://developers.google.com/static/maps/images/landing/hero_maps_static_api.png" alt="Map Preview" class="img-fluid w-100 h-100" style="object-fit: cover;">
+              </div>
+            </div>
+          </div>
+          
+          <div class="card">
+            <div class="card-header">
+              <i class="fas fa-box"></i> Recent Packages
+            </div>
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table table-hover">
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Package</th>
+                      <th>Customer</th>
+                      <th>Driver</th>
+                      <th>Status</th>
+                      <th>Date</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>#12458</td>
+                      <td>Document Delivery</td>
+                      <td>John Smith</td>
+                      <td>Driver A</td>
+                      <td><span class="badge bg-primary">In Transit</span></td>
+                      <td>May 24, 2023</td>
+                      <td>
+                        <button class="btn btn-sm btn-outline-primary"><i class="fas fa-eye"></i></button>
+                        <button class="btn btn-sm btn-outline-secondary"><i class="fas fa-edit"></i></button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>#12457</td>
+                      <td>Electronics Package</td>
+                      <td>Sarah Johnson</td>
+                      <td>Driver B</td>
+                      <td><span class="badge bg-warning">Pending</span></td>
+                      <td>May 24, 2023</td>
+                      <td>
+                        <button class="btn btn-sm btn-outline-primary"><i class="fas fa-eye"></i></button>
+                        <button class="btn btn-sm btn-outline-secondary"><i class="fas fa-edit"></i></button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>#12456</td>
+                      <td>Furniture Delivery</td>
+                      <td>Michael Brown</td>
+                      <td>Driver C</td>
+                      <td><span class="badge bg-success">Delivered</span></td>
+                      <td>May 23, 2023</td>
+                      <td>
+                        <button class="btn btn-sm btn-outline-primary"><i class="fas fa-eye"></i></button>
+                        <button class="btn btn-sm btn-outline-secondary"><i class="fas fa-edit"></i></button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>#12455</td>
+                      <td>Grocery Delivery</td>
+                      <td>Emma Davis</td>
+                      <td>Driver A</td>
+                      <td><span class="badge bg-success">Delivered</span></td>
+                      <td>May 23, 2023</td>
+                      <td>
+                        <button class="btn btn-sm btn-outline-primary"><i class="fas fa-eye"></i></button>
+                        <button class="btn btn-sm btn-outline-secondary"><i class="fas fa-edit"></i></button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>#12454</td>
+                      <td>Fashion Items</td>
+                      <td>James Wilson</td>
+                      <td>Driver D</td>
+                      <td><span class="badge bg-primary">In Transit</span></td>
+                      <td>May 22, 2023</td>
+                      <td>
+                        <button class="btn btn-sm btn-outline-primary"><i class="fas fa-eye"></i></button>
+                        <button class="btn btn-sm btn-outline-secondary"><i class="fas fa-edit"></i></button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="text-end mt-3">
+                <a href="#" class="btn btn-outline-primary btn-sm">View All Packages</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="action-card">
+            <h4>System Overview</h4>
+            <p>View comprehensive analytics and reports about your delivery operations.</p>
+            <button class="btn btn-light quick-action-btn" data-action="view-reports">
+              <i class="fas fa-chart-line me-1"></i> View Analytics
+            </button>
+          </div>
+          
+          <div class="card mb-4">
+            <div class="card-header">
+              <i class="fas fa-chart-pie"></i> Package Distribution
+            </div>
+            <div class="card-body">
+              <canvas id="package-distribution-chart" height="200"></canvas>
+              
+              <div class="mt-4">
+                <div class="d-flex justify-content-between mb-2">
+                  <span><i class="fas fa-circle text-primary me-1"></i> In Transit</span>
+                  <span>45%</span>
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                  <span><i class="fas fa-circle text-success me-1"></i> Delivered</span>
+                  <span>35%</span>
+                </div>
+                <div class="d-flex justify-content-between">
+                  <span><i class="fas fa-circle text-warning me-1"></i> Pending</span>
+                  <span>20%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="card">
+            <div class="card-header">
+              <i class="fas fa-bell"></i> System Notifications
+            </div>
+            <div class="card-body">
+              <div class="d-flex align-items-center mb-3">
+                <div class="me-3">
+                  <i class="fas fa-exclamation-triangle text-warning fs-4"></i>
+                </div>
+                <div>
+                  <p class="mb-0 fw-bold">Driver Shortage</p>
+                  <p class="mb-0 small text-muted">Low driver availability in Lagos East area.</p>
+                </div>
+              </div>
+              <div class="d-flex align-items-center mb-3">
+                <div class="me-3">
+                  <i class="fas fa-chart-line text-success fs-4"></i>
+                </div>
+                <div>
+                  <p class="mb-0 fw-bold">Increased Demand</p>
+                  <p class="mb-0 small text-muted">20% increase in package volume this week.</p>
+                </div>
+              </div>
+              <div class="d-flex align-items-center">
+                <div class="me-3">
+                  <i class="fas fa-user-plus text-primary fs-4"></i>
+                </div>
+                <div>
+                  <p class="mb-0 fw-bold">New Drivers</p>
+                  <p class="mb-0 small text-muted">5 new driver applications pending review.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Users Section -->
+    <section id="users-section" class="content-section">
+      <h3 class="mb-4">User Management</h3>
+      
+      <div class="card mb-4">
+        <div class="card-body">
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <div class="input-group">
+                <input type="text" class="form-control" placeholder="Search users..." id="user-search">
+                <button class="btn btn-outline-secondary" type="button">
+                  <i class="fas fa-search"></i>
+                </button>
+              </div>
+            </div>
+            <div class="col-md-6 d-flex justify-content-md-end mt-3 mt-md-0">
+              <button class="btn btn-primary">
+                <i class="fas fa-user-plus me-2"></i> Add New User
+              </button>
+            </div>
+          </div>
+          
+          <div class="mb-3">
+            <span class="filter-badge active">All Users</span>
+            <span class="filter-badge">Customers</span>
+            <span class="filter-badge">Drivers</span>
+            <span class="filter-badge">Admins</span>
+            <span class="filter-badge">Active</span>
+            <span class="filter-badge">Inactive</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="card">
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th>User</th>
+                  <th>Email</th>
+                  <th>Role</th>
+                  <th>Status</th>
+                  <th>Joined Date</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User Avatar" class="user-avatar me-2">
+                      <div>
+                        <p class="mb-0 fw-bold">John Smith</p>
+                      </div>
+                    </div>
+                  </td>
+                  <td>john.smith@example.com</td>
+                  <td><span class="badge bg-info">Customer</span></td>
+                  <td><span class="badge bg-success">Active</span></td>
+                  <td>May 10, 2023</td>
+                  <td>
+                    <button class="btn btn-sm btn-outline-primary"><i class="fas fa-eye"></i></button>
+                    <button class="btn btn-sm btn-outline-secondary"><i class="fas fa-edit"></i></button>
+                    <button class="btn btn-sm btn-outline-danger"><i class="fas fa-trash"></i></button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="User Avatar" class="user-avatar me-2">
+                      <div>
+                        <p class="mb-0 fw-bold">Sarah Johnson</p>
+                      </div>
+                    </div>
+                  </td>
+                  <td>sarah.johnson@example.com</td>
+                  <td><span class="badge bg-primary">Driver</span></td>
+                  <td><span class="badge bg-success">Active</span></td>
+                  <td>Apr 22, 2023</td>
+                  <td>
+                    <button class="btn btn-sm btn-outline-primary"><i class="fas fa-eye"></i></button>
+                    <button class="btn btn-sm btn-outline-secondary"><i class="fas fa-edit"></i></button>
+                    <button class="btn btn-sm btn-outline-danger"><i class="fas fa-trash"></i></button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <img src="https://randomuser.me/api/portraits/men/67.jpg" alt="User Avatar" class="user-avatar me-2">
+                      <div>
+                        <p class="mb-0 fw-bold">Michael Brown</p>
+                      </div>
+                    </div>
+                  </td>
+                  <td>michael.brown@example.com</td>
+                  <td><span class="badge bg-info">Customer</span></td>
+                  <td><span class="badge bg-secondary">Inactive</span></td>
+                  <td>Mar 15, 2023</td>
+                  <td>
+                    <button class="btn btn-sm btn-outline-primary"><i class="fas fa-eye"></i></button>
+                    <button class="btn btn-sm btn-outline-secondary"><i class="fas fa-edit"></i></button>
+                    <button class="btn btn-sm btn-outline-danger"><i class="fas fa-trash"></i></button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <img src="https://randomuser.me/api/portraits/women/22.jpg" alt="User Avatar" class="user-avatar me-2">
+                      <div>
+                        <p class="mb-0 fw-bold">Emma Davis</p>
+                      </div>
+                    </div>
+                  </td>
+                  <td>emma.davis@example.com</td>
+                  <td><span class="badge bg-info">Customer</span></td>
+                  <td><span class="badge bg-success">Active</span></td>
+                  <td>Mar 8, 2023</td>
+                  <td>
+                    <button class="btn btn-sm btn-outline-primary"><i class="fas fa-eye"></i></button>
+                    <button class="btn btn-sm btn-outline-secondary"><i class="fas fa-edit"></i></button>
+                    <button class="btn btn-sm btn-outline-danger"><i class="fas fa-trash"></i></button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <img src="https://randomuser.me/api/portraits/men/54.jpg" alt="User Avatar" class="user-avatar me-2">
+                      <div>
+                        <p class="mb-0 fw-bold">James Wilson</p>
+                      </div>
+                    </div>
+                  </td>
+                  <td>james.wilson@example.com</td>
+                  <td><span class="badge bg-primary">Driver</span></td>
+                  <td><span class="badge bg-success">Active</span></td>
+                  <td>Feb 20, 2023</td>
+                  <td>
+                    <button class="btn btn-sm btn-outline-primary"><i class="fas fa-eye"></i></button>
+                    <button class="btn btn-sm btn-outline-secondary"><i class="fas fa-edit"></i></button>
+                    <button class="btn btn-sm btn-outline-danger"><i class="fas fa-trash"></i></button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <img src="https://randomuser.me/api/portraits/women/36.jpg" alt="User Avatar" class="user-avatar me-2">
+                      <div>
+                        <p class="mb-0 fw-bold">Olivia Taylor</p>
+                      </div>
+                    </div>
+                  </td>
+                  <td>olivia.taylor@example.com</td>
+                  <td><span class="badge bg-danger">Admin</span></td>
+                  <td><span class="badge bg-success">Active</span></td>
+                  <td>Jan 15, 2023</td>
+                  <td>
+                    <button class="btn btn-sm btn-outline-primary"><i class="fas fa-eye"></i></button>
+                    <button class="btn btn-sm btn-outline-secondary"><i class="fas fa-edit"></i></button>
+                    <button class="btn btn-sm btn-outline-danger"><i class="fas fa-trash"></i></button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          
+          <nav aria-label="Page navigation" class="mt-4">
+            <ul class="pagination justify-content-center">
+              <li class="page-item disabled">
+                <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+              </li>
+              <li class="page-item active"><a class="page-link" href="#">1</a></li>
+              <li class="page-item"><a class="page-link" href="#">2</a></li>
+              <li class="page-item"><a class="page-link" href="#">3</a></li>
+              <li class="page-item">
+                <a class="page-link" href="#">Next</a>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Packages Section -->
+    <section id="packages-section" class="content-section">
+      <h3 class="mb-4">Package Management</h3>
+      
+      <div class="card mb-4">
+        <div class="card-body">
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <div class="input-group">
+                <input type="text" class="form-control" placeholder="Search packages..." id="package-search">
+                <button class="btn btn-outline-secondary" type="button">
+                  <i class="fas fa-search"></i>
+                </button>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <select class="form-select" id="package-status-filter">
+                <option value="all">All Status</option>
+                <option value="pending">Pending</option>
+                <option value="in-transit">In Transit</option>
+                <option value="delivered">Delivered</option>
+                <option value="cancelled">Cancelled</option>
+              </select>
+            </div>
+            <div class="col-md-3">
+              <select class="form-select" id="package-date-filter">
+                <option value="all">All Time</option>
+                <option value="today">Today</option>
+                <option value="week">This Week</option>
+                <option value="month">This Month</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="card">
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Package</th>
+                  <th>Customer</th>
+                  <th>From</th>
+                  <th>To</th>
+                  <th>Driver</th>
+                  <th>Status</th>
+                  <th>Date</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>#12458</td>
+                  <td>Document Delivery</td>
+                  <td>John Smith</td>
+                  <td>Lagos Central</td>
+                  <td>Victoria Island</td>
+                  <td>Driver A</td>
+                  <td><span class="badge bg-primary">In Transit</span></td>
+                  <td>May 24, 2023</td>
+                  <td>
+                    <button class="btn btn-sm btn-outline-primary"><i class="fas fa-eye"></i></button>
+                    <button class="btn btn-sm btn-outline-secondary"><i class="fas fa-edit"></i></button>
+                    <button class="btn btn-sm btn-outline-danger"><i class="fas fa-times"></i></button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>#12457</td>
+                  <td>Electronics Package</td>
+                  <td>Sarah Johnson</td>
+                  <td>Ikeja</td>
+                  <td>Lekki Phase 1</td>
+                  <td>Driver B</td>
+                  <td><span class="badge bg-warning">Pending</span></td>
+                  <td>May 24, 2023</td>
+                  <td>
+                    <button class="btn btn-sm btn-outline-primary"><i class="fas fa-eye"></i></button>
+                    <button class="btn btn-sm btn-outline-secondary"><i class="fas fa-edit"></i></button>
+                    <button class="btn btn-sm btn-outline-danger"><i class="fas fa-times"></i></button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>#12456</td>
+                  <td>Furniture Delivery</td>
+                  <td>Michael Brown</td>
+                  <td>Surulere</td>
+                  <td>Yaba</td>
+                  <td>Driver C</td>
+                  <td><span class="badge bg-success">Delivered</span></td>
+                  <td>May 23, 2023</td>
+                  <td>
+                    <button class="btn btn-sm btn-outline-primary"><i class="fas fa-eye"></i></button>
+                    <button class="btn btn-sm btn-outline-secondary"><i class="fas fa-edit"></i></button>
+                    <button class="btn btn-sm btn-outline-danger"><i class="fas fa-times"></i></button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>#12455</td>
+                  <td>Grocery Delivery</td>
+                  <td>Emma Davis</td>
+                  <td>Ajah</td>
+                  <td>Victoria Island</td>
+                  <td>Driver A</td>
+                  <td><span class="badge bg-success">Delivered</span></td>
+                  <td>May 23, 2023</td>
+                  <td>
+                    <button class="btn btn-sm btn-outline-primary"><i class="fas fa-eye"></i></button>
+                    <button class="btn btn-sm btn-outline-secondary"><i class="fas fa-edit"></i></button>
+                    <button class="btn btn-sm btn-outline-danger"><i class="fas fa-times"></i></button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>#12454</td>
+                  <td>Fashion Items</td>
+                  <td>James Wilson</td>
+                  <td>Lagos Island</td>
+                  <td>Ikoyi</td>
+                  <td>Driver D</td>
+                  <td><span class="badge bg-primary">In Transit</span></td>
+                  <td>May 22, 2023</td>
+                  <td>
+                    <button class="btn btn-sm btn-outline-primary"><i class="fas fa-eye"></i></button>
+                    <button class="btn btn-sm btn-outline-secondary"><i class="fas fa-edit"></i></button>
+                    <button class="btn btn-sm btn-outline-danger"><i class="fas fa-times"></i></button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>#12453</td>
+                  <td>Office Supplies</td>
+                  <td>Olivia Taylor</td>
+                  <td>Ikeja</td>
+                  <td>Victoria Island</td>
+                  <td>Driver B</td>
+                  <td><span class="badge bg-danger">Cancelled</span></td>
+                  <td>May 22, 2023</td>
+                  <td>
+                    <button class="btn btn-sm btn-outline-primary"><i class="fas fa-eye"></i></button>
+                    <button class="btn btn-sm btn-outline-secondary"><i class="fas fa-edit"></i></button>
+                    <button class="btn btn-sm btn-outline-danger"><i class="fas fa-times"></i></button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>#12452</td>
+                  <td>Electronic Devices</td>
+                  <td>William Brown</td>
+                  <td>Lekki Phase 1</td>
+                  <td>Ajah</td>
+                  <td>Driver C</td>
+                  <td><span class="badge bg-success">Delivered</span></td>
+                  <td>May 21, 2023</td>
+                  <td>
+                    <button class="btn btn-sm btn-outline-primary"><i class="fas fa-eye"></i></button>
+                    <button class="btn btn-sm btn-outline-secondary"><i class="fas fa-edit"></i></button>
+                    <button class="btn btn-sm btn-outline-danger"><i class="fas fa-times"></i></button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          
+          <nav aria-label="Page navigation" class="mt-4">
+            <ul class="pagination justify-content-center">
+              <li class="page-item disabled">
+                <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+              </li>
+              <li class="page-item active"><a class="page-link" href="#">1</a></li>
+              <li class="page-item"><a class="page-link" href="#">2</a></li>
+              <li class="page-item"><a class="page-link" href="#">3</a></li>
+              <li class="page-item">
+                <a class="page-link" href="#">Next</a>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Drivers Section -->
+    <section id="drivers-section" class="content-section">
+      <h3 class="mb-4">Driver Management</h3>
+      
+      <div class="row mb-4">
+        <div class="col-md-3">
+          <div class="card h-100">
+            <div class="stats-card">
+              <i class="fas fa-users"></i>
+              <h3>38</h3>
+              <p>Total Drivers</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card h-100">
+            <div class="stats-card">
+              <i class="fas fa-truck"></i>
+              <h3>26</h3>
+              <p>Active Drivers</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card h-100">
+            <div class="stats-card">
+              <i class="fas fa-route"></i>
+              <h3>18</h3>
+              <p>On Delivery</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card h-100">
+            <div class="stats-card">
+              <i class="fas fa-user-plus"></i>
+              <h3>5</h3>
+              <p>Pending Applications</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="card mb-4">
+        <div class="card-header">
+          <i class="fas fa-map-marked-alt"></i> Driver Locations
+        </div>
+        <div class="card-body p-0">
+          <div class="map-container" id="driver-map">
+            <!-- Map will be loaded here -->
+            <img src="https://developers.google.com/static/maps/images/landing/hero_maps_static_api.png" alt="Map Preview" class="img-fluid w-100 h-100" style="object-fit: cover;">
+          </div>
+        </div>
+      </div>
+      
+      <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <div>
+            <i class="fas fa-truck"></i> Driver List
+          </div>
+          <button class="btn btn-primary btn-sm">
+            <i class="fas fa-user-plus me-1"></i> Add Driver
+          </button>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th>Driver</th>
+                  <th>Vehicle Type</th>
+                  <th>Area</th>
+                  <th>Status</th>
+                  <th>Rating</th>
+                  <th>Completed</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Driver Avatar" class="user-avatar me-2">
+                      <div>
+                        <p class="mb-0 fw-bold">Alex Johnson</p>
+                        <small class="text-muted">ID: DRV-001</small>
+                      </div>
+                    </div>
+                  </td>
+                  <td>Motorcycle</td>
+                  <td>Lagos Central</td>
+                  <td><span class="badge bg-success">Active</span></td>
+                  <td>
+                    <div class="text-warning">
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star-half-alt"></i>
+                      <span class="text-dark ms-1">4.5</span>
+                    </div>
+                  </td>
+                  <td>156</td>
+                  <td>
+                    <button class="btn btn-sm btn-outline-primary"><i class="fas fa-eye"></i></button>
+                    <button class="btn btn-sm btn-outline-secondary"><i class="fas fa-edit"></i></button>
+                    <button class="btn btn-sm btn-outline-danger"><i class="fas fa-ban"></i></button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Driver Avatar" class="user-avatar me-2">
+                      <div>
+                        <p class="mb-0 fw-bold">Sarah Williams</p>
+                        <small class="text-muted">ID: DRV-002</small>
+                      </div>
+                    </div>
+                  </td>
+                  <td>Car</td>
+                  <td>Lagos Island</td>
+                  <td><span class="badge bg-primary">On Delivery</span></td>
+                  <td>
+                    <div class="text-warning">
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <span class="text-dark ms-1">5.0</span>
+                    </div>
+                  </td>
+                  <td>142</td>
+                  <td>
+                    <button class="btn btn-sm btn-outline-primary"><i class="fas fa-eye"></i></button>
+                    <button class="btn btn-sm btn-outline-secondary"><i class="fas fa-edit"></i></button>
+                    <button class="btn btn-sm btn-outline-danger"><i class="fas fa-ban"></i></button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <img src="https://randomuser.me/api/portraits/men/67.jpg" alt="Driver Avatar" class="user-avatar me-2">
+                      <div>
+                        <p class="mb-0 fw-bold">Michael Davis</p>
+                        <small class="text-muted">ID: DRV-003</small>
+                      </div>
+                    </div>
+                  </td>
+                  <td>Van</td>
+                  <td>Ikeja</td>
+                  <td><span class="badge bg-secondary">Inactive</span></td>
+                  <td>
+                    <div class="text-warning">
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="far fa-star"></i>
+                      <i class="far fa-star"></i>
+                      <span class="text-dark ms-1">3.0</span>
+                    </div>
+                  </td>
+                  <td>68</td>
+                  <td>
+                    <button class="btn btn-sm btn-outline-primary"><i class="fas fa-eye"></i></button>
+                    <button class="btn btn-sm btn-outline-secondary"><i class="fas fa-edit"></i></button>
+                    <button class="btn btn-sm btn-outline-success"><i class="fas fa-check"></i></button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <img src="https://randomuser.me/api/portraits/men/22.jpg" alt="Driver Avatar" class="user-avatar me-2">
+                      <div>
+                        <p class="mb-0 fw-bold">James Wilson</p>
+                        <small class="text-muted">ID: DRV-004</small>
+                      </div>
+                    </div>
+                  </td>
+                  <td>Motorcycle</td>
+                  <td>Lekki</td>
+                  <td><span class="badge bg-primary">On Delivery</span></td>
+                  <td>
+                    <div class="text-warning">
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="far fa-star"></i>
+                      <span class="text-dark ms-1">4.0</span>
+                    </div>
+                  </td>
+                  <td>112</td>
+                  <td>
+                    <button class="btn btn-sm btn-outline-primary"><i class="fas fa-eye"></i></button>
+                    <button class="btn btn-sm btn-outline-secondary"><i class="fas fa-edit"></i></button>
+                    <button class="btn btn-sm btn-outline-danger"><i class="fas fa-ban"></i></button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <img src="https://randomuser.me/api/portraits/women/55.jpg" alt="Driver Avatar" class="user-avatar me-2">
+                      <div>
+                        <p class="mb-0 fw-bold">Emma Thompson</p>
+                        <small class="text-muted">ID: DRV-005</small>
+                      </div>
+                    </div>
+                  </td>
+                  <td>Bike</td>
+                  <td>Victoria Island</td>
+                  <td><span class="badge bg-success">Active</span></td>
+                  <td>
+                    <div class="text-warning">
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star-half-alt"></i>
+                      <i class="far fa-star"></i>
+                      <span class="text-dark ms-1">3.5</span>
+                    </div>
+                  </td>
+                  <td>89</td>
+                  <td>
+                    <button class="btn btn-sm btn-outline-primary"><i class="fas fa-eye"></i></button>
+                    <button class="btn btn-sm btn-outline-secondary"><i class="fas fa-edit"></i></button>
+                    <button class="btn btn-sm btn-outline-danger"><i class="fas fa-ban"></i></button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Analytics Section -->
+    <section id="analytics-section" class="content-section">
+      <h3 class="mb-4">Analytics & Reports</h3>
+      
+      <div class="row mb-4">
+        <div class="col-md-6">
+          <div class="card h-100">
+            <div class="card-header">
+              <i class="fas fa-chart-line"></i> Delivery Volume
+            </div>
+            <div class="card-body analytics-card">
+              <!-- Chart will be loaded here -->
+              <img src="https://cdn.pixabay.com/photo/2016/06/13/08/53/statistics-1453616_960_720.jpg" alt="Analytics Chart" class="img-fluid w-100 h-100" style="object-fit: cover; border-radius: 8px;">
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="card h-100">
+            <div class="card-header">
+              <i class="fas fa-chart-bar"></i> Revenue Trend
+            </div>
+            <div class="card-body analytics-card">
+              <!-- Chart will be loaded here -->
+              <img src="https://cdn.pixabay.com/photo/2016/06/13/08/53/statistics-1453617_960_720.jpg" alt="Analytics Chart" class="img-fluid w-100 h-100" style="object-fit: cover; border-radius: 8px;">
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="row mb-4">
+        <div class="col-md-4">
+          <div class="card h-100">
+            <div class="card-header">
+              <i class="fas fa-chart-pie"></i> Package Types
+            </div>
+            <div class="card-body">
+              <canvas id="package-types-chart" height="200"></canvas>
+              
+              <div class="mt-4">
+                <div class="d-flex justify-content-between mb-2">
+                  <span><i class="fas fa-circle text-primary me-1"></i> Documents</span>
+                  <span>30%</span>
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                  <span><i class="fas fa-circle text-success me-1"></i> Electronics</span>
+                  <span>25%</span>
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                  <span><i class="fas fa-circle text-warning me-1"></i> Groceries</span>
+                  <span>20%</span>
+                </div>
+                <div class="d-flex justify-content-between">
+                  <span><i class="fas fa-circle text-danger me-1"></i> Others</span>
+                  <span>25%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card h-100">
+            <div class="card-header">
+              <i class="fas fa-chart-bar"></i> Popular Routes
+            </div>
+            <div class="card-body">
+              <canvas id="popular-routes-chart" height="200"></canvas>
+              
+              <div class="mt-4">
+                <div class="d-flex justify-content-between mb-2">
+                  <span><i class="fas fa-circle text-primary me-1"></i> Lagos Central to Victoria Island</span>
+                  <span>35%</span>
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                  <span><i class="fas fa-circle text-success me-1"></i> Ikeja to Lekki</span>
+                  <span>25%</span>
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                  <span><i class="fas fa-circle text-warning me-1"></i> Lekki to Victoria Island</span>
+                  <span>20%</span>
+                </div>
+                <div class="d-flex justify-content-between">
+                  <span><i class="fas fa-circle text-danger me-1"></i> Others</span>
+                  <span>20%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card h-100">
+            <div class="card-header">
+              <i class="fas fa-chart-line"></i> User Growth
+            </div>
+            <div class="card-body">
+              <canvas id="user-growth-chart" height="200"></canvas>
+              
+              <div class="mt-4">
+                <div class="d-flex justify-content-between mb-2">
+                  <span><i class="fas fa-circle text-info me-1"></i> Customers</span>
+                  <span>+15% / month</span>
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                  <span><i class="fas fa-circle text-primary me-1"></i> Drivers</span>
+                  <span>+8% / month</span>
+                </div>
+                <div class="d-flex justify-content-between">
+                  <span><i class="fas fa-circle text-success me-1"></i> Active Users</span>
+                  <span>+12% / month</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <div>
+            <i class="fas fa-file-alt"></i> Generated Reports
+          </div>
+          <button class="btn btn-primary btn-sm">
+            <i class="fas fa-plus me-1"></i> Generate New Report
+          </button>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th>Report Name</th>
+                  <th>Type</th>
+                  <th>Generated By</th>
+                  <th>Date</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Monthly Performance Report - May 2023</td>
+                  <td>Performance</td>
+                  <td>Admin</td>
+                  <td>May 24, 2023</td>
+                  <td>
+                    <button class="btn btn-sm btn-outline-primary"><i class="fas fa-eye"></i></button>
+                    <button class="btn btn-sm btn-outline-success"><i class="fas fa-download"></i></button>
+                    <button class="btn btn-sm btn-outline-danger"><i class="fas fa-trash"></i></button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>Driver Performance Analysis</td>
+                  <td>Driver</td>
+                  <td>Admin</td>
+                  <td>May 20, 2023</td>
+                  <td>
+                    <button class="btn btn-sm btn-outline-primary"><i class="fas fa-eye"></i></button>
+                    <button class="btn btn-sm btn-outline-success"><i class="fas fa-download"></i></button>
+                    <button class="btn btn-sm btn-outline-danger"><i class="fas fa-trash"></i></button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>Revenue Report - April 2023</td>
+                  <td>Finance</td>
+                  <td>Admin</td>
+                  <td>May 05, 2023</td>
+                  <td>
+                    <button class="btn btn-sm btn-outline-primary"><i class="fas fa-eye"></i></button>
+                    <button class="btn btn-sm btn-outline-success"><i class="fas fa-download"></i></button>
+                    <button class="btn btn-sm btn-outline-danger"><i class="fas fa-trash"></i></button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>Customer Satisfaction Survey Results</td>
+                  <td>Customer</td>
+                  <td>Admin</td>
+                  <td>Apr 28, 2023</td>
+                  <td>
+                    <button class="btn btn-sm btn-outline-primary"><i class="fas fa-eye"></i></button>
+                    <button class="btn btn-sm btn-outline-success"><i class="fas fa-download"></i></button>
+                    <button class="btn btn-sm btn-outline-danger"><i class="fas fa-trash"></i></button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Settings Section -->
+    <section id="settings-section" class="content-section">
+      <h3 class="mb-4">System Settings</h3>
+      
+      <div class="row">
+        <div class="col-lg-8">
+          <div class="card mb-4">
+            <div class="card-header">
+              <i class="fas fa-cog"></i> General Settings
+            </div>
+            <div class="card-body">
+              <form>
+                <div class="mb-3">
+                  <label for="company-name" class="form-label">Company Name</label>
+                  <input type="text" class="form-control" id="company-name" value="Myngenda Delivery Services">
+                </div>
+                <div class="mb-3">
+                  <label for="company-email" class="form-label">Contact Email</label>
+                  <input type="email" class="form-control" id="company-email" value="contact@myngenda.com">
+                </div>
+                <div class="mb-3">
+                  <label for="company-phone" class="form-label">Contact Phone</label>
+                  <input type="tel" class="form-control" id="company-phone" value="+234 123 456 7890">
+                </div>
+                <div class="mb-3">
+                  <label for="company-address" class="form-label">Company Address</label>
+                  <textarea class="form-control" id="company-address" rows="3">123 Business Avenue, Lagos, Nigeria</textarea>
+                </div>
+                <div class="mb-3">
+                  <label for="default-currency" class="form-label">Default Currency</label>
+                  <select class="form-select" id="default-currency">
+                    <option value="NGN" selected>Nigerian Naira (₦)</option>
+                    <option value="USD">US Dollar ($)</option>
+                    <option value="EUR">Euro (€)</option>
+                    <option value="GBP">British Pound (£)</option>
+                  </select>
+                </div>
+                <div class="mb-3">
+                  <label for="time-zone" class="form-label">Time Zone</label>
+                  <select class="form-select" id="time-zone">
+                    <option value="Africa/Lagos" selected>Africa/Lagos (GMT+1)</option>
+                    <option value="UTC">UTC</option>
+                    <option value="Europe/London">Europe/London (GMT)</option>
+                  </select>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">System Language</label>
+                  <select class="form-select">
+                    <option value="en" selected>English</option>
+                    <option value="fr">French</option>
+                    <option value="es">Spanish</option>
+                    <option value="yo">Yoruba</option>
+                    <option value="ha">Hausa</option>
+                    <option value="ig">Igbo</option>
+                  </select>
+                </div>
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                  <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save me-1"></i> Save Changes
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+          
+          <div class="card mb-4">
+            <div class="card-header">
+              <i class="fas fa-shield-alt"></i> Security Settings
+            </div>
+            <div class="card-body">
+              <form>
+                <div class="mb-3">
+                  <label for="password-policy" class="form-label">Password Policy</label>
+                  <select class="form-select" id="password-policy">
+                    <option value="standard" selected>Standard (min. 8 characters, 1 uppercase, 1 number)</option>
+                    <option value="strong">Strong (min. 10 characters, uppercase, lowercase, number, symbol)</option>
+                    <option value="custom">Custom</option>
+                  </select>
+                </div>
+                <div class="mb-3">
+                  <label for="session-timeout" class="form-label">Session Timeout (minutes)</label>
+                  <input type="number" class="form-control" id="session-timeout" value="30">
+                </div>
+                <div class="mb-3">
+                  <label for="failed-attempts" class="form-label">Failed Login Attempts Before Lockout</label>
+                  <input type="number" class="form-control" id="failed-attempts" value="5">
+                </div>
+                <div class="mb-3">
+                  <label for="lockout-duration" class="form-label">Account Lockout Duration (minutes)</label>
+                  <input type="number" class="form-control" id="lockout-duration" value="15">
+                </div>
+                <div class="form-check form-switch mb-3">
+                  <input class="form-check-input" type="checkbox" id="two-factor" checked>
+                  <label class="form-check-label" for="two-factor">Enable Two-Factor Authentication for Admins</label>
+                </div>
+                <div class="form-check form-switch mb-3">
+                  <input class="form-check-input" type="checkbox" id="password-reset">
+                  <label class="form-check-label" for="password-reset">Force Password Reset Every 90 Days</label>
+                </div>
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                  <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save me-1"></i> Save Changes
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-lg-4">
+          <div class="card mb-4">
+            <div class="card-header">
+              <i class="fas fa-envelope"></i> Email Settings
+            </div>
+            <div class="card-body">
+              <form>
+                <div class="mb-3">
+                  <label for="smtp-server" class="form-label">SMTP Server</label>
+                  <input type="text" class="form-control" id="smtp-server" value="smtp.myngenda.com">
+                </div>
+                <div class="mb-3">
+                  <label for="smtp-port" class="form-label">SMTP Port</label>
+                  <input type="number" class="form-control" id="smtp-port" value="587">
+                </div>
+                <div class="mb-3">
+                  <label for="smtp-username" class="form-label">SMTP Username</label>
+                  <input type="text" class="form-control" id="smtp-username" value="noreply@myngenda.com">
+                </div>
+                <div class="mb-3">
+                  <label for="smtp-password" class="form-label">SMTP Password</label>
+                  <input type="password" class="form-control" id="smtp-password" value="********">
+                </div>
+                <div class="form-check form-switch mb-3">
+                  <input class="form-check-input" type="checkbox" id="smtp-ssl" checked>
+                  <label class="form-check-label" for="smtp-ssl">Use SSL/TLS</label>
+                </div>
+                <button type="button" class="btn btn-outline-primary w-100">
+                  <i class="fas fa-paper-plane me-1"></i> Test Email Configuration
+                </button>
+              </form>
+            </div>
+          </div>
+          
+          <div class="card mb-4">
+            <div class="card-header">
+              <i class="fas fa-bell"></i> Notification Settings
+            </div>
+            <div class="card-body">
+              <div class="form-check form-switch mb-3">
+                <input class="form-check-input" type="checkbox" id="new-user-notification" checked>
+                <label class="form-check-label" for="new-user-notification">New User Registration</label>
+              </div>
+              <div class="form-check form-switch mb-3">
+                <input class="form-check-input" type="checkbox" id="new-package-notification" checked>
+                <label class="form-check-label" for="new-package-notification">New Package Creation</label>
+              </div>
+              <div class="form-check form-switch mb-3">
+                <input class="form-check-input" type="checkbox" id="package-status-notification" checked>
+                <label class="form-check-label" for="package-status-notification">Package Status Changes</label>
+              </div>
+              <div class="form-check form-switch mb-3">
+                <input class="form-check-input" type="checkbox" id="driver-notification" checked>
+                <label class="form-check-label" for="driver-notification">Driver Assignment</label>
+              </div>
+              <div class="form-check form-switch mb-3">
+                <input class="form-check-input" type="checkbox" id="system-notification" checked>
+                <label class="form-check-label" for="system-notification">System Alerts</label>
+              </div>
+              <button type="button" class="btn btn-primary w-100">
+                <i class="fas fa-save me-1"></i> Save Notification Settings
+              </button>
+            </div>
+          </div>
+          
+          <div class="card">
+            <div class="card-header">
+              <i class="fas fa-globe"></i> API Settings
+            </div>
+            <div class="card-body">
+              <div class="mb-3">
+                <label for="google-maps-key" class="form-label">Google Maps API Key</label>
+                <input type="text" class="form-control" id="google-maps-key" value="AIza*****************">
+              </div>
+              <div class="mb-3">
+                <label for="payment-gateway" class="form-label">Payment Gateway</label>
+                <select class="form-select" id="payment-gateway">
+                  <option value="flutterwave" selected>Flutterwave</option>
+                  <option value="paystack">Paystack</option>
+                  <option value="stripe">Stripe</option>
+                </select>
+              </div>
+              <div class="form-check form-switch mb-3">
+                <input class="form-check-input" type="checkbox" id="enable-api" checked>
+                <label class="form-check-label" for="enable-api">Enable External API Access</label>
+              </div>
+              <button type="button" class="btn btn-primary w-100">
+                <i class="fas fa-save me-1"></i> Save API Settings
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- System Section -->
+    <section id="system-section" class="content-section">
+      <h3 class="mb-4">System Management</h3>
+      
+      <div class="row mb-4">
+        <div class="col-md-4">
+          <div class="card h-100">
+            <div class="card-header">
+              <i class="fas fa-server"></i> System Status
+            </div>
+            <div class="card-body">
+              <div class="mb-4">
+                <div class="d-flex justify-content-between mb-2">
+                  <span>API Server</span>
+                  <span><span class="status-indicator status-green"></span> Operational</span>
+                </div>
+                <div class="progress" style="height: 8px;">
+                  <div class="progress-bar bg-success" role="progressbar" style="width: 95%"></div>
+                </div>
+                <div class="d-flex justify-content-between mt-1">
+                  <small class="text-muted">Load: 5%</small>
+                  <small class="text-muted">Uptime: 99.9%</small>
+                </div>
+              </div>
+              
+              <div class="mb-4">
+                <div class="d-flex justify-content-between mb-2">
+                  <span>Database Server</span>
+                  <span><span class="status-indicator status-green"></span> Operational</span>
+                </div>
+                <div class="progress" style="height: 8px;">
+                  <div class="progress-bar bg-success" role="progressbar" style="width: 80%"></div>
+                </div>
+                <div class="d-flex justify-content-between mt-1">
+                  <small class="text-muted">Load: 20%</small>
+                  <small class="text-muted">Uptime: 99.8%</small>
+                </div>
+              </div>
+              
+              <div class="mb-4">
+                <div class="d-flex justify-content-between mb-2">
+                  <span>Web Server</span>
+                  <span><span class="status-indicator status-green"></span> Operational</span>
+                </div>
+                <div class="progress" style="height: 8px;">
+                  <div class="progress-bar bg-success" role="progressbar" style="width: 85%"></div>
+                </div>
+                <div class="d-flex justify-content-between mt-1">
+                  <small class="text-muted">Load: 15%</small>
+                  <small class="text-muted">Uptime: 100%</small>
+                </div>
+              </div>
+              
+              <div>
+                <div class="d-flex justify-content-between mb-2">
+                  <span>Maps Integration</span>
+                  <span><span class="status-indicator status-yellow"></span> Degraded</span>
+                </div>
+                <div class="progress" style="height: 8px;">
+                  <div class="progress-bar bg-warning" role="progressbar" style="width: 65%"></div>
+                </div>
+                <div class="d-flex justify-content-between mt-1">
+                  <small class="text-muted">Performance: 65%</small>
+                  <small class="text-muted">Uptime: 97.5%</small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-md-4">
+          <div class="card h-100">
+            <div class="card-header">
+              <i class="fas fa-tasks"></i> System Resources
+            </div>
+            <div class="card-body">
+              <div class="mb-4">
+                <label class="form-label">CPU Usage</label>
+                <div class="progress" style="height: 25px;">
+                  <div class="progress-bar bg-success" role="progressbar" style="width: 42%">42%</div>
+                </div>
+              </div>
+              
+              <div class="mb-4">
+                <label class="form-label">Memory Usage</label>
+                <div class="progress" style="height: 25px;">
+                  <div class="progress-bar bg-primary" role="progressbar" style="width: 68%">68%</div>
+                </div>
+              </div>
+              
+              <div class="mb-4">
+                <label class="form-label">Disk Usage</label>
+                <div class="progress" style="height: 25px;">
+                  <div class="progress-bar bg-info" role="progressbar" style="width: 55%">55%</div>
+                </div>
+              </div>
+              
+              <div>
+                <label class="form-label">Network Traffic</label>
+                <div class="progress" style="height: 25px;">
+                  <div class="progress-bar bg-warning" role="progressbar" style="width: 32%">32%</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-md-4">
+          <div class="card h-100">
+            <div class="card-header">
+              <i class="fas fa-history"></i> System Logs
+            </div>
+            <div class="card-body">
+              <div class="mb-3">
+                <div class="input-group">
+                  <select class="form-select" id="log-type">
+                    <option value="all">All Logs</option>
+                    <option value="error">Error Logs</option>
+                    <option value="warning">Warning Logs</option>
+                    <option value="info">Info Logs</option>
+                  </select>
+                  <button class="btn btn-outline-secondary" type="button">Filter</button>
+                </div>
+              </div>
+              
+              <div class="log-entries" style="max-height: 300px; overflow-y: auto;">
+                <div class="log-entry mb-2 p-2 bg-light rounded">
+                  <div class="d-flex justify-content-between">
+                    <span class="badge bg-danger">ERROR</span>
+                    <small class="text-muted">2023-05-24 14:32:15</small>
+                  </div>
+                  <p class="mb-0 small">Failed to connect to payment gateway: Timeout</p>
+                </div>
+                
+                <div class="log-entry mb-2 p-2 bg-light rounded">
+                  <div class="d-flex justify-content-between">
+                    <span class="badge bg-success">INFO</span>
+                    <small class="text-muted">2023-05-24 14:30:05</small>
+                  </div>
+                  <p class="mb-0 small">User login: admin@myngenda.com</p>
+                </div>
+                
+                <div class="log-entry mb-2 p-2 bg-light rounded">
+                  <div class="d-flex justify-content-between">
+                    <span class="badge bg-warning">WARNING</span>
+                    <small class="text-muted">2023-05-24 14:25:42</small>
+                  </div>
+                  <p class="mb-0 small">High memory usage detected: 85%</p>
+                </div>
+                
+                <div class="log-entry mb-2 p-2 bg-light rounded">
+                  <div class="d-flex justify-content-between">
+                    <span class="badge bg-success">INFO</span>
+                    <small class="text-muted">2023-05-24 14:20:18</small>
+                  </div>
+                  <p class="mb-0 small">New package created: #12458</p>
+                </div>
+                
+                <div class="log-entry mb-2 p-2 bg-light rounded">
+                  <div class="d-flex justify-content-between">
+                    <span class="badge bg-success">INFO</span>
+                    <small class="text-muted">2023-05-24 14:15:33</small>
+                  </div>
+                  <p class="mb-0 small">System backup completed successfully</p>
+                </div>
+              </div>
+              
+              <div class="mt-3">
+                <button class="btn btn-outline-primary btn-sm w-100">
+                  <i class="fas fa-download me-1"></i> Download Full Logs
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="row">
+        <div class="col-md-6">
+          <div class="card mb-4">
+            <div class="card-header">
+              <i class="fas fa-database"></i> Database Management
+            </div>
+            <div class="card-body">
+              <div class="mb-3">
+                <label class="form-label">Last Backup</label>
+                <div class="input-group">
+                  <input type="text" class="form-control" value="2023-05-24 00:00:00 UTC" readonly>
+                  <button class="btn btn-outline-primary" type="button">
+                    <i class="fas fa-redo-alt me-1"></i> Backup Now
+                  </button>
+                </div>
+              </div>
+              
+              <div class="mb-3">
+                <label class="form-label">Backup Schedule</label>
+                <select class="form-select">
+                  <option value="daily" selected>Daily</option>
+                  <option value="weekly">Weekly</option>
+                  <option value="monthly">Monthly</option>
+                  <option value="custom">Custom</option>
+                </select>
+              </div>
+              
+              <div class="mb-3">
+                <label class="form-label">Backup Retention</label>
+                <select class="form-select">
+                  <option value="7">7 Days</option>
+                  <option value="14">14 Days</option>
+                  <option value="30" selected>30 Days</option>
+                  <option value="90">90 Days</option>
+                </select>
+              </div>
+              
+              <div class="d-grid gap-2">
+                <button class="btn btn-outline-primary">
+                  <i class="fas fa-cog me-1"></i> Database Settings
+                </button>
+                <button class="btn btn-outline-warning">
+                  <i class="fas fa-broom me-1"></i> Optimize Database
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          <div class="card">
+            <div class="card-header">
+              <i class="fas fa-plug"></i> System Integrations
+            </div>
+            <div class="card-body">
+              <div class="mb-3 d-flex justify-content-between align-items-center">
+                <div>
+                  <h6 class="mb-0">Google Maps API</h6>
+                  <p class="mb-0 small text-muted">Location and routing services</p>
+                </div>
+                <div class="form-check form-switch">
+                  <input class="form-check-input" type="checkbox" id="maps-integration" checked>
+                </div>
+              </div>
+              
+              <div class="mb-3 d-flex justify-content-between align-items-center">
+                <div>
+                  <h6 class="mb-0">Flutterwave Payment Gateway</h6>
+                  <p class="mb-0 small text-muted">Payment processing</p>
+                </div>
+                <div class="form-check form-switch">
+                  <input class="form-check-input" type="checkbox" id="payment-integration" checked>
+                </div>
+              </div>
+              
+              <div class="mb-3 d-flex justify-content-between align-items-center">
+                <div>
+                  <h6 class="mb-0">SMS Gateway</h6>
+                  <p class="mb-0 small text-muted">Text message notifications</p>
+                </div>
+                <div class="form-check form-switch">
+                  <input class="form-check-input" type="checkbox" id="sms-integration" checked>
+                </div>
+              </div>
+              
+              <div class="mb-3 d-flex justify-content-between align-items-center">
+                <div>
+                  <h6 class="mb-0">Email Service</h6>
+                  <p class="mb-0 small text-muted">Email notifications</p>
+                </div>
+                <div class="form-check form-switch">
+                  <input class="form-check-input" type="checkbox" id="email-integration" checked>
+                </div>
+              </div>
+              
+              <div class="mb-3 d-flex justify-content-between align-items-center">
+                <div>
+                  <h6 class="mb-0">Analytics Integration</h6>
+                  <p class="mb-0 small text-muted">Usage tracking and reporting</p>
+                </div>
+                <div class="form-check form-switch">
+                  <input class="form-check-input" type="checkbox" id="analytics-integration" checked>
+                </div>
+              </div>
+              
+              <button class="btn btn-primary w-100">
+                <i class="fas fa-save me-1"></i> Save Integration Settings
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-md-6">
+          <div class="card mb-4">
+            <div class="card-header">
+              <i class="fas fa-cloud-upload-alt"></i> System Updates
+            </div>
+            <div class="card-body">
+              <div class="alert alert-info">
+                <i class="fas fa-info-circle me-2"></i>
+                System is up to date. Current version: 1.5.2
+              </div>
+              
+              <div class="mb-3">
+                <label class="form-label">Update Channel</label>
+                <select class="form-select">
+                  <option value="stable" selected>Stable</option>
+                  <option value="beta">Beta</option>
+                  <option value="dev">Development</option>
+                </select>
+              </div>
+              
+              <div class="form-check form-switch mb-3">
+                <input class="form-check-input" type="checkbox" id="auto-updates" checked>
+                <label class="form-check-label" for="auto-updates">Automatic Updates</label>
+              </div>
+              
+              <div class="d-grid gap-2">
+                <button class="btn btn-primary">
+                  <i class="fas fa-sync me-1"></i> Check for Updates
+                </button>
+                <button class="btn btn-outline-secondary">
+                  <i class="fas fa-history me-1"></i> View Update History
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          <div class="card">
+            <div class="card-header">
+              <i class="fas fa-tools"></i> System Maintenance
+            </div>
+            <div class="card-body">
+              <div class="mb-3">
+                <label class="form-label">Maintenance Mode</label>
+                <div class="input-group">
+                  <select class="form-select">
+                    <option value="off" selected>Off</option>
+                    <option value="on">On</option>
+                    <option value="scheduled">Scheduled</option>
+                  </select>
+                  <button class="btn btn-outline-primary" type="button">Apply</button>
+                </div>
+              </div>
+              
+              <div class="mb-3">
+                <label class="form-label">Cache Management</label>
+                <div class="progress mb-2" style="height: 10px;">
+                  <div class="progress-bar bg-info" role="progressbar" style="width: 75%"></div>
+                </div>
+                <div class="d-flex justify-content-between">
+                  <small class="text-muted">Cache Usage: 75%</small>
+                  <small class="text-muted">Size: 256MB</small>
+                </div>
+              </div>
+              
+              <div class="d-grid gap-2">
+                <button class="btn btn-outline-primary">
+                  <i class="fas fa-broom me-1"></i> Clear System Cache
+                </button>
+                <button class="btn btn-outline-warning">
+                  <i class="fas fa-recycle me-1"></i> Rebuild Indexes
+                </button>
+                <button class="btn btn-outline-danger">
+                  <i class="fas fa-trash-alt me-1"></i> Clear Temporary Files
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/auth-connector-enhanced.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Check if user is authenticated
+      if (!AuthConnector.isAuthenticated()) {
+        window.location.href = '/standalone-auth-enhanced.html';
+        return;
+      }
+      
+      // Get current user
+      const user = AuthConnector.getCurrentUser();
+      
+      // Verify this is an admin dashboard
+      if (user.role !== 'admin') {
+        AuthConnector.redirectToDashboard();
+        return;
+      }
+      
+      // Update user information in UI
+      document.getElementById('user-name').textContent = user.name || 'Admin';
+      document.getElementById('sidebar-user-name').textContent = user.name || 'Admin';
+      
+      // Update user avatar if available
+      if (user.profileImageUrl) {
+        document.getElementById('user-avatar').src = user.profileImageUrl;
+      } else {
+        // Create avatar from name or email
+        const nameInitial = user.name ? user.name.charAt(0) : user.email.charAt(0);
+        const avatarUrl = `https://ui-avatars.com/api/?name=${nameInitial.toUpperCase()}&background=9c27b0&color=fff`;
+        document.getElementById('user-avatar').src = avatarUrl;
+      }
+      
+      // Section navigation
+      const navLinks = document.querySelectorAll('.nav-link[data-section]');
+      const contentSections = document.querySelectorAll('.content-section');
+      
+      navLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+          e.preventDefault();
+          
+          // Remove active class from all links and sections
+          navLinks.forEach(l => l.classList.remove('active'));
+          contentSections.forEach(s => s.classList.remove('active'));
+          
+          // Add active class to clicked link
+          this.classList.add('active');
+          
+          // Show corresponding section
+          const sectionId = this.getAttribute('data-section');
+          document.getElementById(sectionId).classList.add('active');
+        });
+      });
+      
+      // Quick Action buttons
+      const quickActionButtons = document.querySelectorAll('.quick-action-btn');
+      
+      quickActionButtons.forEach(button => {
+        button.addEventListener('click', function() {
+          const action = this.getAttribute('data-action');
+          
+          switch (action) {
+            case 'add-user':
+              // Show users section
+              navLinks.forEach(l => l.classList.remove('active'));
+              contentSections.forEach(s => s.classList.remove('active'));
+              document.querySelector('.nav-link[data-section="users-section"]').classList.add('active');
+              document.getElementById('users-section').classList.add('active');
+              break;
+              
+            case 'assign-driver':
+              // Show drivers section
+              navLinks.forEach(l => l.classList.remove('active'));
+              contentSections.forEach(s => s.classList.remove('active'));
+              document.querySelector('.nav-link[data-section="drivers-section"]').classList.add('active');
+              document.getElementById('drivers-section').classList.add('active');
+              break;
+              
+            case 'view-reports':
+              // Show analytics section
+              navLinks.forEach(l => l.classList.remove('active'));
+              contentSections.forEach(s => s.classList.remove('active'));
+              document.querySelector('.nav-link[data-section="analytics-section"]').classList.add('active');
+              document.getElementById('analytics-section').classList.add('active');
+              break;
+              
+            case 'system-settings':
+              // Show settings section
+              navLinks.forEach(l => l.classList.remove('active'));
+              contentSections.forEach(s => s.classList.remove('active'));
+              document.querySelector('.nav-link[data-section="settings-section"]').classList.add('active');
+              document.getElementById('settings-section').classList.add('active');
+              break;
+          }
+        });
+      });
+      
+      // Logout functionality
+      const logoutButtons = document.querySelectorAll('#logout-btn, #sidebar-logout-btn');
+      
+      logoutButtons.forEach(button => {
+        button.addEventListener('click', async function(e) {
+          e.preventDefault();
+          
+          try {
+            await AuthConnector.logout();
+            window.location.href = '/standalone-auth-enhanced.html';
+          } catch (error) {
+            console.error('Logout error:', error);
+            alert('An error occurred during logout. Please try again.');
+          }
+        });
+      });
+      
+      // Filter badges
+      const filterBadges = document.querySelectorAll('.filter-badge');
+      
+      filterBadges.forEach(badge => {
+        badge.addEventListener('click', function() {
+          filterBadges.forEach(b => b.classList.remove('active'));
+          this.classList.add('active');
+          // In a real application, this would filter the table data
+        });
+      });
+      
+      // Also fetch current user from API to get latest data
+      async function fetchCurrentUser() {
+        try {
+          const result = await AuthConnector.fetchCurrentUser();
+          
+          if (result.success) {
+            // Update UI with latest user data
+            document.getElementById('user-name').textContent = result.user.name || 'Admin';
+            document.getElementById('sidebar-user-name').textContent = result.user.name || 'Admin';
+            
+            // Update avatar if available
+            if (result.user.profileImageUrl) {
+              document.getElementById('user-avatar').src = result.user.profileImageUrl;
+            }
+          }
+        } catch (error) {
+          console.error('Fetch current user error:', error);
+        }
+      }
+      
+      // Fetch current user
+      fetchCurrentUser();
+    });
+  </script>
+</body>
+</html>

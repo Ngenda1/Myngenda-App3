@@ -1,0 +1,1840 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Myngenda - Driver Dashboard</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary-color: #3498db; /* Blue for drivers */
+      --primary-dark: #2980b9;
+      --secondary-color: #2ecc71;
+      --secondary-dark: #27ae60;
+      --accent-color: #f39c12;
+      --text-color: #333;
+      --light-bg: #f8f9fa;
+      --border-radius: 8px;
+      --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      --transition: all 0.3s ease;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f5f5f5;
+      color: var(--text-color);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .navbar-brand {
+      font-weight: bold;
+      font-size: 1.5rem;
+    }
+    
+    .navbar-brand span {
+      color: var(--primary-color);
+    }
+    
+    .sidebar {
+      background-color: white;
+      box-shadow: var(--box-shadow);
+      height: calc(100vh - 56px);
+      position: fixed;
+      width: 250px;
+      z-index: 100;
+      transition: var(--transition);
+      overflow-y: auto;
+    }
+    
+    .sidebar-header {
+      padding: 1.5rem 1rem;
+      border-bottom: 1px solid #e9ecef;
+    }
+    
+    .sidebar-header img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-right: 0.75rem;
+    }
+    
+    .sidebar-header h5 {
+      margin-bottom: 0;
+      font-weight: 600;
+    }
+    
+    .sidebar-header p {
+      margin-bottom: 0;
+      color: #6c757d;
+      font-size: 0.875rem;
+    }
+    
+    .nav-link {
+      padding: 0.75rem 1rem;
+      color: var(--text-color);
+      border-radius: 0;
+      transition: var(--transition);
+    }
+    
+    .nav-link:hover, .nav-link.active {
+      background-color: rgba(52, 152, 219, 0.1);
+      color: var(--primary-color);
+    }
+    
+    .nav-link i {
+      margin-right: 0.75rem;
+      width: 20px;
+      text-align: center;
+    }
+    
+    .main-content {
+      margin-left: 250px;
+      padding: 2rem;
+      transition: var(--transition);
+    }
+    
+    .card {
+      border: none;
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      transition: var(--transition);
+      margin-bottom: 1.5rem;
+    }
+    
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .card-header {
+      background-color: white;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+      font-weight: 600;
+      padding: 1rem 1.25rem;
+    }
+    
+    .card-header i {
+      color: var(--primary-color);
+      margin-right: 0.5rem;
+    }
+    
+    .stats-card {
+      padding: 1.5rem;
+      text-align: center;
+      height: 100%;
+    }
+    
+    .stats-card i {
+      font-size: 2.5rem;
+      color: var(--primary-color);
+      margin-bottom: 1rem;
+    }
+    
+    .stats-card h3 {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+    
+    .stats-card p {
+      color: #6c757d;
+      margin-bottom: 0;
+    }
+    
+    .action-card {
+      background-color: var(--primary-color);
+      color: white;
+      padding: 1.5rem;
+      border-radius: var(--border-radius);
+      margin-bottom: 1.5rem;
+      transition: var(--transition);
+    }
+    
+    .action-card:hover {
+      background-color: var(--primary-dark);
+      transform: translateY(-5px);
+    }
+    
+    .action-card h4 {
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+    
+    .action-card p {
+      margin-bottom: 1.5rem;
+      opacity: 0.9;
+    }
+    
+    .btn-light {
+      background-color: white;
+      color: var(--primary-color);
+      font-weight: 500;
+      padding: 0.5rem 1rem;
+      border-radius: var(--border-radius);
+      transition: var(--transition);
+    }
+    
+    .btn-light:hover {
+      background-color: #f8f9fa;
+      transform: translateY(-2px);
+    }
+    
+    .btn-primary {
+      background-color: var(--primary-color);
+      border-color: var(--primary-color);
+    }
+    
+    .btn-primary:hover, .btn-primary:focus {
+      background-color: var(--primary-dark);
+      border-color: var(--primary-dark);
+    }
+    
+    .package-card {
+      margin-bottom: 1rem;
+      border-radius: var(--border-radius);
+      overflow: hidden;
+    }
+    
+    .package-card .card-body {
+      padding: 1.25rem;
+    }
+    
+    .package-status {
+      padding: 0.25rem 0.5rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      text-transform: uppercase;
+    }
+    
+    .status-pending {
+      background-color: #ffeeba;
+      color: #856404;
+    }
+    
+    .status-transit {
+      background-color: #b8daff;
+      color: #004085;
+    }
+    
+    .status-delivered {
+      background-color: #c3e6cb;
+      color: #155724;
+    }
+    
+    .package-date {
+      font-size: 0.875rem;
+      color: #6c757d;
+    }
+    
+    .package-eta {
+      font-weight: 500;
+    }
+    
+    .form-floating {
+      margin-bottom: 1rem;
+    }
+    
+    @media (max-width: 992px) {
+      .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+      }
+      
+      .main-content {
+        margin-left: 0;
+        padding: 1.5rem;
+      }
+      
+      .sidebar-nav {
+        display: flex;
+        flex-wrap: wrap;
+      }
+      
+      .nav-link {
+        padding: 0.5rem 1rem;
+        margin-right: 0.5rem;
+        margin-bottom: 0.5rem;
+        border-radius: var(--border-radius);
+      }
+    }
+    
+    /* Quick Actions Section */
+    .quick-actions {
+      margin-bottom: 2rem;
+    }
+    
+    .quick-action-item {
+      background-color: white;
+      border-radius: var(--border-radius);
+      padding: 1.25rem;
+      box-shadow: var(--box-shadow);
+      text-align: center;
+      transition: var(--transition);
+      height: 100%;
+    }
+    
+    .quick-action-item:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .quick-action-icon {
+      font-size: 2rem;
+      color: var(--primary-color);
+      margin-bottom: 1rem;
+    }
+    
+    .quick-action-title {
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+    
+    .quick-action-description {
+      color: #6c757d;
+      font-size: 0.875rem;
+      margin-bottom: 1rem;
+    }
+    
+    /* Loading Spinner */
+    .spinner-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 200px;
+    }
+    
+    .spinner {
+      width: 3rem;
+      height: 3rem;
+      color: var(--primary-color);
+    }
+    
+    /* Package Item */
+    .package-item {
+      border-left: 4px solid var(--primary-color);
+      background-color: white;
+      border-radius: var(--border-radius);
+      margin-bottom: 1rem;
+      padding: 1rem;
+      box-shadow: var(--box-shadow);
+      transition: var(--transition);
+    }
+    
+    .package-item:hover {
+      transform: translateX(5px);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    }
+    
+    .package-item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+    
+    .package-item-name {
+      font-weight: 600;
+      font-size: 1.1rem;
+      margin-bottom: 0;
+    }
+    
+    .package-item-details {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .package-item-detail {
+      display: flex;
+      align-items: center;
+    }
+    
+    .package-item-detail i {
+      color: var(--primary-color);
+      margin-right: 0.5rem;
+    }
+    
+    /* Content Sections */
+    .content-section {
+      display: none;
+    }
+    
+    .content-section.active {
+      display: block;
+    }
+    
+    /* Map styles */
+    .map-container {
+      height: 400px;
+      border-radius: var(--border-radius);
+      overflow: hidden;
+      margin-bottom: 1.5rem;
+    }
+    
+    /* Vehicle info card */
+    .vehicle-info {
+      padding: 1.5rem;
+    }
+    
+    .vehicle-info-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    
+    .vehicle-info-item i {
+      width: 40px;
+      height: 40px;
+      background-color: rgba(52, 152, 219, 0.1);
+      color: var(--primary-color);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 1rem;
+      font-size: 1.25rem;
+    }
+    
+    .vehicle-info-item div {
+      flex: 1;
+    }
+    
+    .vehicle-info-item h6 {
+      margin-bottom: 0.25rem;
+      font-weight: 600;
+    }
+    
+    .vehicle-info-item p {
+      margin-bottom: 0;
+      color: #6c757d;
+    }
+    
+    /* Earnings chart */
+    .earnings-chart {
+      height: 300px;
+      margin-bottom: 1.5rem;
+    }
+    
+    /* Available deliveries card */
+    .delivery-item {
+      border-bottom: 1px solid #e9ecef;
+      padding: 1rem 0;
+    }
+    
+    .delivery-item:last-child {
+      border-bottom: none;
+    }
+    
+    .delivery-distance {
+      font-weight: 500;
+      color: var(--primary-color);
+    }
+    
+    .delivery-pay {
+      font-weight: 600;
+      color: var(--secondary-color);
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+    <div class="container-fluid px-4">
+      <a class="navbar-brand" href="/">
+        <img src="https://raw.githubusercontent.com/yourusername/myngenda/main/assets/logo.png" alt="Myngenda Logo" height="35">
+        Myngenda <span>Delivery Services</span>
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+              <i class="fas fa-user-circle me-1"></i>
+              <span id="user-name">Driver</span>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i>Profile</a></li>
+              <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i>Settings</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="#" id="logout-btn"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="sidebar-header d-flex align-items-center">
+      <img src="https://ui-avatars.com/api/?name=D&background=3498db&color=fff" alt="User Avatar" id="user-avatar">
+      <div>
+        <h5 id="sidebar-user-name">Driver</h5>
+        <p id="user-role">Driver Account</p>
+      </div>
+    </div>
+    <ul class="nav flex-column sidebar-nav">
+      <li class="nav-item">
+        <a class="nav-link active" href="#dashboard" data-section="dashboard-section">
+          <i class="fas fa-home"></i>Dashboard
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#deliveries" data-section="deliveries-section">
+          <i class="fas fa-truck"></i>My Deliveries
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#available" data-section="available-section">
+          <i class="fas fa-list"></i>Available Jobs
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#earnings" data-section="earnings-section">
+          <i class="fas fa-money-bill-wave"></i>Earnings
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#vehicle" data-section="vehicle-section">
+          <i class="fas fa-car"></i>My Vehicle
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#profile" data-section="profile-section">
+          <i class="fas fa-user"></i>Profile
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#settings" data-section="settings-section">
+          <i class="fas fa-cog"></i>Settings
+        </a>
+      </li>
+      <li class="nav-item mt-4">
+        <a class="nav-link text-danger" href="#" id="sidebar-logout-btn">
+          <i class="fas fa-sign-out-alt"></i>Logout
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <!-- Quick Actions Section -->
+    <section class="quick-actions mb-4">
+      <h4 class="mb-3">Quick Actions</h4>
+      <div class="row g-3">
+        <div class="col-md-4">
+          <div class="quick-action-item">
+            <div class="quick-action-icon">
+              <i class="fas fa-search"></i>
+            </div>
+            <h5 class="quick-action-title">Find Deliveries</h5>
+            <p class="quick-action-description">Discover available delivery jobs near you</p>
+            <button class="btn btn-primary btn-sm quick-action-btn" data-action="find-deliveries">Find Now</button>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="quick-action-item">
+            <div class="quick-action-icon">
+              <i class="fas fa-route"></i>
+            </div>
+            <h5 class="quick-action-title">Start Route</h5>
+            <p class="quick-action-description">Begin your delivery route for today</p>
+            <button class="btn btn-primary btn-sm quick-action-btn" data-action="start-route">Start Now</button>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="quick-action-item">
+            <div class="quick-action-icon">
+              <i class="fas fa-history"></i>
+            </div>
+            <h5 class="quick-action-title">View History</h5>
+            <p class="quick-action-description">Check your delivery history</p>
+            <button class="btn btn-primary btn-sm quick-action-btn" data-action="view-history">View Now</button>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Dashboard Section -->
+    <section id="dashboard-section" class="content-section active">
+      <h3 class="mb-4">Driver Dashboard</h3>
+      
+      <div class="row mb-4">
+        <div class="col-md-4">
+          <div class="card h-100">
+            <div class="stats-card">
+              <i class="fas fa-box"></i>
+              <h3 id="total-deliveries-count">0</h3>
+              <p>Total Deliveries</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card h-100">
+            <div class="stats-card">
+              <i class="fas fa-truck"></i>
+              <h3 id="in-progress-count">0</h3>
+              <p>In Progress</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card h-100">
+            <div class="stats-card">
+              <i class="fas fa-check-circle"></i>
+              <h3 id="completed-count">0</h3>
+              <p>Completed</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="row">
+        <div class="col-lg-8">
+          <div class="card mb-4">
+            <div class="card-header">
+              <i class="fas fa-map-marked-alt"></i> Current Deliveries
+            </div>
+            <div class="card-body p-0">
+              <div class="map-container" id="delivery-map">
+                <!-- Map will be loaded here -->
+                <img src="https://developers.google.com/static/maps/images/landing/hero_maps_static_api.png" alt="Map Preview" class="img-fluid w-100 h-100" style="object-fit: cover;">
+              </div>
+            </div>
+          </div>
+          
+          <div class="card">
+            <div class="card-header">
+              <i class="fas fa-box"></i> Upcoming Deliveries
+            </div>
+            <div class="card-body">
+              <div id="upcoming-deliveries-container">
+                <div class="spinner-container">
+                  <div class="spinner-border spinner" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="action-card">
+            <h4>Start Your Day</h4>
+            <p>Begin your delivery route and view your scheduled deliveries for today.</p>
+            <button class="btn btn-light quick-action-btn" data-action="start-route">
+              <i class="fas fa-play me-1"></i> Start Route
+            </button>
+          </div>
+          
+          <div class="card mb-4">
+            <div class="card-header">
+              <i class="fas fa-car"></i> Vehicle Information
+            </div>
+            <div class="card-body">
+              <div class="vehicle-info-item">
+                <i class="fas fa-car"></i>
+                <div>
+                  <h6>Vehicle Type</h6>
+                  <p id="vehicle-type">Motorcycle</p>
+                </div>
+              </div>
+              <div class="vehicle-info-item">
+                <i class="fas fa-gas-pump"></i>
+                <div>
+                  <h6>Fuel Level</h6>
+                  <div class="progress" style="height: 10px;">
+                    <div class="progress-bar bg-success" role="progressbar" style="width: 75%"></div>
+                  </div>
+                  <p class="mt-1">75% Full</p>
+                </div>
+              </div>
+              <div class="vehicle-info-item">
+                <i class="fas fa-tachometer-alt"></i>
+                <div>
+                  <h6>Status</h6>
+                  <p><span class="badge bg-success">Ready for Delivery</span></p>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="card">
+            <div class="card-header">
+              <i class="fas fa-bell"></i> Notifications
+            </div>
+            <div class="card-body">
+              <div class="d-flex align-items-center mb-3">
+                <div class="me-3">
+                  <i class="fas fa-box text-primary fs-4"></i>
+                </div>
+                <div>
+                  <p class="mb-0 fw-bold">New Delivery</p>
+                  <p class="mb-0 small text-muted">New delivery available in your area.</p>
+                </div>
+              </div>
+              <div class="d-flex align-items-center mb-3">
+                <div class="me-3">
+                  <i class="fas fa-money-bill-wave text-success fs-4"></i>
+                </div>
+                <div>
+                  <p class="mb-0 fw-bold">Payment Received</p>
+                  <p class="mb-0 small text-muted">You received payment for delivery #12345.</p>
+                </div>
+              </div>
+              <div class="d-flex align-items-center">
+                <div class="me-3">
+                  <i class="fas fa-star text-warning fs-4"></i>
+                </div>
+                <div>
+                  <p class="mb-0 fw-bold">New Rating</p>
+                  <p class="mb-0 small text-muted">You received a 5-star rating!</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Deliveries Section -->
+    <section id="deliveries-section" class="content-section">
+      <h3 class="mb-4">My Deliveries</h3>
+      
+      <div class="card mb-4">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="input-group">
+                <input type="text" class="form-control" placeholder="Search deliveries..." id="delivery-search">
+                <button class="btn btn-outline-secondary" type="button">
+                  <i class="fas fa-search"></i>
+                </button>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <select class="form-select" id="delivery-status-filter">
+                <option value="all">All Status</option>
+                <option value="pending">Pending</option>
+                <option value="in-progress">In Progress</option>
+                <option value="completed">Completed</option>
+              </select>
+            </div>
+            <div class="col-md-3">
+              <select class="form-select" id="delivery-date-filter">
+                <option value="all">All Time</option>
+                <option value="today">Today</option>
+                <option value="week">This Week</option>
+                <option value="month">This Month</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div id="deliveries-list-container">
+        <div class="spinner-container">
+          <div class="spinner-border spinner" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Available Jobs Section -->
+    <section id="available-section" class="content-section">
+      <h3 class="mb-4">Available Delivery Jobs</h3>
+      
+      <div class="row mb-4">
+        <div class="col-lg-8">
+          <div class="card mb-4">
+            <div class="card-header">
+              <i class="fas fa-map-marked-alt"></i> Jobs Near You
+            </div>
+            <div class="card-body p-0">
+              <div class="map-container" id="jobs-map">
+                <!-- Map will be loaded here -->
+                <img src="https://developers.google.com/static/maps/images/landing/hero_maps_static_api.png" alt="Map Preview" class="img-fluid w-100 h-100" style="object-fit: cover;">
+              </div>
+            </div>
+          </div>
+          
+          <div class="card">
+            <div class="card-header">
+              <i class="fas fa-list"></i> Available Jobs
+            </div>
+            <div class="card-body">
+              <div class="delivery-item d-flex justify-content-between align-items-center">
+                <div>
+                  <h6 class="mb-1">Package Delivery</h6>
+                  <p class="mb-0 small text-muted">From: Lagos Central • To: Lagos Island</p>
+                  <p class="mb-0 small delivery-distance">Distance: 5.2 km</p>
+                </div>
+                <div class="text-end">
+                  <p class="mb-1 delivery-pay">₦1,200</p>
+                  <button class="btn btn-sm btn-primary">Accept Job</button>
+                </div>
+              </div>
+              
+              <div class="delivery-item d-flex justify-content-between align-items-center">
+                <div>
+                  <h6 class="mb-1">Document Delivery</h6>
+                  <p class="mb-0 small text-muted">From: Victoria Island • To: Ikoyi</p>
+                  <p class="mb-0 small delivery-distance">Distance: 3.8 km</p>
+                </div>
+                <div class="text-end">
+                  <p class="mb-1 delivery-pay">₦850</p>
+                  <button class="btn btn-sm btn-primary">Accept Job</button>
+                </div>
+              </div>
+              
+              <div class="delivery-item d-flex justify-content-between align-items-center">
+                <div>
+                  <h6 class="mb-1">Electronics Delivery</h6>
+                  <p class="mb-0 small text-muted">From: Lekki Phase 1 • To: Ajah</p>
+                  <p class="mb-0 small delivery-distance">Distance: 12.5 km</p>
+                </div>
+                <div class="text-end">
+                  <p class="mb-1 delivery-pay">₦2,500</p>
+                  <button class="btn btn-sm btn-primary">Accept Job</button>
+                </div>
+              </div>
+              
+              <div class="delivery-item d-flex justify-content-between align-items-center">
+                <div>
+                  <h6 class="mb-1">Grocery Delivery</h6>
+                  <p class="mb-0 small text-muted">From: Surulere • To: Yaba</p>
+                  <p class="mb-0 small delivery-distance">Distance: 4.7 km</p>
+                </div>
+                <div class="text-end">
+                  <p class="mb-1 delivery-pay">₦1,100</p>
+                  <button class="btn btn-sm btn-primary">Accept Job</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-lg-4">
+          <div class="card mb-4">
+            <div class="card-header">
+              <i class="fas fa-filter"></i> Filter Jobs
+            </div>
+            <div class="card-body">
+              <div class="mb-3">
+                <label for="distance-range" class="form-label">Maximum Distance</label>
+                <input type="range" class="form-range" id="distance-range" min="1" max="50" value="20">
+                <div class="d-flex justify-content-between">
+                  <span>1 km</span>
+                  <span id="distance-value">20 km</span>
+                  <span>50 km</span>
+                </div>
+              </div>
+              
+              <div class="mb-3">
+                <label for="min-pay" class="form-label">Minimum Pay</label>
+                <input type="range" class="form-range" id="min-pay" min="500" max="5000" step="100" value="800">
+                <div class="d-flex justify-content-between">
+                  <span>₦500</span>
+                  <span id="min-pay-value">₦800</span>
+                  <span>₦5,000</span>
+                </div>
+              </div>
+              
+              <div class="mb-3">
+                <label class="form-label">Package Type</label>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="type-document" checked>
+                  <label class="form-check-label" for="type-document">Document</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="type-small" checked>
+                  <label class="form-check-label" for="type-small">Small Package</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="type-medium" checked>
+                  <label class="form-check-label" for="type-medium">Medium Package</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="type-large">
+                  <label class="form-check-label" for="type-large">Large Package</label>
+                </div>
+              </div>
+              
+              <div class="d-grid">
+                <button class="btn btn-primary">Apply Filters</button>
+              </div>
+            </div>
+          </div>
+          
+          <div class="card">
+            <div class="card-header">
+              <i class="fas fa-map-marker-alt"></i> Job Locations
+            </div>
+            <div class="card-body">
+              <div class="mb-3">
+                <label for="job-area" class="form-label">Your Working Area</label>
+                <select class="form-select" id="job-area">
+                  <option>Lagos Mainland</option>
+                  <option>Lagos Island</option>
+                  <option>Victoria Island</option>
+                  <option>Ikeja</option>
+                  <option>Lekki</option>
+                </select>
+              </div>
+              
+              <div class="form-check form-switch mb-3">
+                <input class="form-check-input" type="checkbox" id="job-notifications" checked>
+                <label class="form-check-label" for="job-notifications">Job Notifications</label>
+                <p class="text-muted small">Receive notifications for new jobs in your area</p>
+              </div>
+              
+              <div class="d-grid">
+                <button class="btn btn-outline-primary">Update Preferences</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Earnings Section -->
+    <section id="earnings-section" class="content-section">
+      <h3 class="mb-4">My Earnings</h3>
+      
+      <div class="row mb-4">
+        <div class="col-md-4">
+          <div class="card h-100">
+            <div class="stats-card">
+              <i class="fas fa-wallet"></i>
+              <h3>₦25,850</h3>
+              <p>Total Earnings</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card h-100">
+            <div class="stats-card">
+              <i class="fas fa-calendar-week"></i>
+              <h3>₦5,200</h3>
+              <p>This Week</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card h-100">
+            <div class="stats-card">
+              <i class="fas fa-calendar-day"></i>
+              <h3>₦1,250</h3>
+              <p>Today</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="row">
+        <div class="col-lg-8">
+          <div class="card mb-4">
+            <div class="card-header">
+              <i class="fas fa-chart-line"></i> Earnings Overview
+            </div>
+            <div class="card-body">
+              <div class="earnings-chart">
+                <!-- Chart will be loaded here -->
+                <img src="https://cdn.pixabay.com/photo/2016/03/05/20/00/analysis-1238603_960_720.jpg" alt="Earnings Chart" class="img-fluid w-100 h-100" style="object-fit: cover; border-radius: 8px;">
+              </div>
+              
+              <div class="row text-center">
+                <div class="col-4">
+                  <div class="py-2 px-3 bg-light rounded">
+                    <h6 class="mb-1">Last Month</h6>
+                    <p class="mb-0 fw-bold">₦18,750</p>
+                  </div>
+                </div>
+                <div class="col-4">
+                  <div class="py-2 px-3 bg-light rounded">
+                    <h6 class="mb-1">This Month</h6>
+                    <p class="mb-0 fw-bold">₦12,350</p>
+                  </div>
+                </div>
+                <div class="col-4">
+                  <div class="py-2 px-3 bg-light rounded">
+                    <h6 class="mb-1">Projected</h6>
+                    <p class="mb-0 fw-bold">₦22,500</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="card">
+            <div class="card-header">
+              <i class="fas fa-list"></i> Recent Earnings
+            </div>
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table table-hover">
+                  <thead>
+                    <tr>
+                      <th>Date</th>
+                      <th>Order ID</th>
+                      <th>Customer</th>
+                      <th>Distance</th>
+                      <th>Amount</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>May 24, 2023</td>
+                      <td>#12458</td>
+                      <td>John Smith</td>
+                      <td>5.2 km</td>
+                      <td>₦1,250</td>
+                    </tr>
+                    <tr>
+                      <td>May 23, 2023</td>
+                      <td>#12445</td>
+                      <td>Sarah Johnson</td>
+                      <td>3.8 km</td>
+                      <td>₦950</td>
+                    </tr>
+                    <tr>
+                      <td>May 23, 2023</td>
+                      <td>#12442</td>
+                      <td>Michael Brown</td>
+                      <td>7.3 km</td>
+                      <td>₦1,500</td>
+                    </tr>
+                    <tr>
+                      <td>May 22, 2023</td>
+                      <td>#12436</td>
+                      <td>Emma Davis</td>
+                      <td>4.1 km</td>
+                      <td>₦1,050</td>
+                    </tr>
+                    <tr>
+                      <td>May 22, 2023</td>
+                      <td>#12430</td>
+                      <td>James Wilson</td>
+                      <td>2.9 km</td>
+                      <td>₦800</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-lg-4">
+          <div class="card mb-4">
+            <div class="card-header">
+              <i class="fas fa-money-bill-wave"></i> Payment Methods
+            </div>
+            <div class="card-body">
+              <div class="d-flex align-items-center mb-3">
+                <div class="me-3">
+                  <i class="fab fa-cc-visa fs-1 text-primary"></i>
+                </div>
+                <div class="flex-grow-1">
+                  <h6 class="mb-0">Visa ending in 4242</h6>
+                  <p class="mb-0 small text-muted">Expires 05/26</p>
+                </div>
+                <div>
+                  <span class="badge bg-success">Default</span>
+                </div>
+              </div>
+              
+              <div class="d-flex align-items-center mb-3">
+                <div class="me-3">
+                  <i class="fab fa-cc-mastercard fs-1 text-danger"></i>
+                </div>
+                <div>
+                  <h6 class="mb-0">Mastercard ending in 8888</h6>
+                  <p class="mb-0 small text-muted">Expires 12/25</p>
+                </div>
+              </div>
+              
+              <button class="btn btn-sm btn-outline-primary w-100 mt-2">
+                <i class="fas fa-plus me-1"></i> Add Payment Method
+              </button>
+            </div>
+          </div>
+          
+          <div class="card">
+            <div class="card-header">
+              <i class="fas fa-calculator"></i> Earnings Breakdown
+            </div>
+            <div class="card-body">
+              <canvas id="earnings-pie-chart" height="200"></canvas>
+              
+              <div class="mt-4">
+                <div class="d-flex justify-content-between mb-2">
+                  <span><i class="fas fa-circle text-primary me-1"></i> Deliveries</span>
+                  <span>₦22,350 (85%)</span>
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                  <span><i class="fas fa-circle text-success me-1"></i> Tips</span>
+                  <span>₦2,500 (10%)</span>
+                </div>
+                <div class="d-flex justify-content-between">
+                  <span><i class="fas fa-circle text-warning me-1"></i> Bonuses</span>
+                  <span>₦1,000 (5%)</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Vehicle Section -->
+    <section id="vehicle-section" class="content-section">
+      <h3 class="mb-4">My Vehicle</h3>
+      
+      <div class="row">
+        <div class="col-lg-8">
+          <div class="card mb-4">
+            <div class="card-header">
+              <i class="fas fa-car"></i> Vehicle Information
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="vehicle-info">
+                    <div class="vehicle-info-item">
+                      <i class="fas fa-car"></i>
+                      <div>
+                        <h6>Vehicle Type</h6>
+                        <p id="vehicle-type-info">Motorcycle</p>
+                      </div>
+                    </div>
+                    <div class="vehicle-info-item">
+                      <i class="fas fa-info-circle"></i>
+                      <div>
+                        <h6>Model</h6>
+                        <p>Honda CBX 250</p>
+                      </div>
+                    </div>
+                    <div class="vehicle-info-item">
+                      <i class="fas fa-palette"></i>
+                      <div>
+                        <h6>Color</h6>
+                        <p>Black</p>
+                      </div>
+                    </div>
+                    <div class="vehicle-info-item">
+                      <i class="fas fa-calendar-alt"></i>
+                      <div>
+                        <h6>Year</h6>
+                        <p>2019</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="vehicle-info">
+                    <div class="vehicle-info-item">
+                      <i class="fas fa-id-card"></i>
+                      <div>
+                        <h6>License Plate</h6>
+                        <p>LG-234-KJA</p>
+                      </div>
+                    </div>
+                    <div class="vehicle-info-item">
+                      <i class="fas fa-file-alt"></i>
+                      <div>
+                        <h6>Registration</h6>
+                        <p>Valid until Dec 2023</p>
+                      </div>
+                    </div>
+                    <div class="vehicle-info-item">
+                      <i class="fas fa-shield-alt"></i>
+                      <div>
+                        <h6>Insurance</h6>
+                        <p>Valid until Oct 2023</p>
+                      </div>
+                    </div>
+                    <div class="vehicle-info-item">
+                      <i class="fas fa-tachometer-alt"></i>
+                      <div>
+                        <h6>Status</h6>
+                        <p><span class="badge bg-success">Ready for Delivery</span></p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="card">
+            <div class="card-header">
+              <i class="fas fa-history"></i> Maintenance History
+            </div>
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table table-hover">
+                  <thead>
+                    <tr>
+                      <th>Date</th>
+                      <th>Service Type</th>
+                      <th>Description</th>
+                      <th>Cost</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Apr 15, 2023</td>
+                      <td>Regular Maintenance</td>
+                      <td>Oil change, filter replacement</td>
+                      <td>₦5,500</td>
+                    </tr>
+                    <tr>
+                      <td>Feb 22, 2023</td>
+                      <td>Repair</td>
+                      <td>Brake pad replacement</td>
+                      <td>₦7,200</td>
+                    </tr>
+                    <tr>
+                      <td>Jan 10, 2023</td>
+                      <td>Regular Maintenance</td>
+                      <td>Oil change, general inspection</td>
+                      <td>₦4,800</td>
+                    </tr>
+                    <tr>
+                      <td>Nov 05, 2022</td>
+                      <td>Repair</td>
+                      <td>Chain replacement</td>
+                      <td>₦6,500</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-lg-4">
+          <div class="card mb-4">
+            <div class="card-header">
+              <i class="fas fa-gas-pump"></i> Fuel Tracking
+            </div>
+            <div class="card-body">
+              <h6 class="mb-3">Current Fuel Level</h6>
+              <div class="progress mb-3" style="height: 20px;">
+                <div class="progress-bar bg-success" role="progressbar" style="width: 75%">75%</div>
+              </div>
+              
+              <div class="d-flex justify-content-between text-muted small mb-4">
+                <span>Empty</span>
+                <span>Full</span>
+              </div>
+              
+              <h6>Fuel Efficiency</h6>
+              <p>Average: 20 km/liter</p>
+              
+              <h6>Last Refuel</h6>
+              <p>May 22, 2023 - ₦4,500</p>
+              
+              <div class="d-grid mt-3">
+                <button class="btn btn-primary">
+                  <i class="fas fa-plus me-1"></i> Log Refueling
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          <div class="card">
+            <div class="card-header">
+              <i class="fas fa-tools"></i> Maintenance Alerts
+            </div>
+            <div class="card-body">
+              <div class="alert alert-warning mb-3">
+                <div class="d-flex">
+                  <div class="me-3">
+                    <i class="fas fa-exclamation-triangle fs-4"></i>
+                  </div>
+                  <div>
+                    <h6 class="alert-heading mb-1">Oil Change Due</h6>
+                    <p class="mb-0 small">Due in 500 km or 2 weeks</p>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="alert alert-info mb-3">
+                <div class="d-flex">
+                  <div class="me-3">
+                    <i class="fas fa-info-circle fs-4"></i>
+                  </div>
+                  <div>
+                    <h6 class="alert-heading mb-1">Tire Inspection</h6>
+                    <p class="mb-0 small">Recommended in 1,000 km</p>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="alert alert-success">
+                <div class="d-flex">
+                  <div class="me-3">
+                    <i class="fas fa-check-circle fs-4"></i>
+                  </div>
+                  <div>
+                    <h6 class="alert-heading mb-1">Brakes</h6>
+                    <p class="mb-0 small">Recently serviced (30 days ago)</p>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="d-grid mt-3">
+                <button class="btn btn-outline-primary">
+                  <i class="fas fa-calendar-plus me-1"></i> Schedule Maintenance
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Profile Section -->
+    <section id="profile-section" class="content-section">
+      <h3 class="mb-4">My Profile</h3>
+      
+      <div class="card">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-4 text-center mb-4 mb-md-0">
+              <img src="https://ui-avatars.com/api/?name=D&background=3498db&color=fff&size=200" alt="User Avatar" class="img-fluid rounded-circle mb-3" style="width: 150px; height: 150px;" id="profile-image">
+              <h5 id="profile-name">Driver Name</h5>
+              <p class="text-muted mb-2" id="profile-email">driver@example.com</p>
+              <p><span class="badge bg-primary" id="profile-role">Driver</span></p>
+              <button class="btn btn-sm btn-outline-primary">
+                <i class="fas fa-camera me-1"></i> Change Photo
+              </button>
+            </div>
+            <div class="col-md-8">
+              <form id="profile-form">
+                <div class="mb-3">
+                  <label for="profile-fullname" class="form-label">Full Name</label>
+                  <input type="text" class="form-control" id="profile-fullname" value="Driver Name">
+                </div>
+                <div class="mb-3">
+                  <label for="profile-email-input" class="form-label">Email Address</label>
+                  <input type="email" class="form-control" id="profile-email-input" value="driver@example.com">
+                </div>
+                <div class="mb-3">
+                  <label for="profile-phone" class="form-label">Phone Number</label>
+                  <input type="tel" class="form-control" id="profile-phone" placeholder="Enter phone number">
+                </div>
+                <div class="mb-3">
+                  <label for="profile-address" class="form-label">Address</label>
+                  <textarea class="form-control" id="profile-address" rows="3" placeholder="Enter your address"></textarea>
+                </div>
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                  <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save me-1"></i> Save Changes
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Settings Section -->
+    <section id="settings-section" class="content-section">
+      <h3 class="mb-4">Settings</h3>
+      
+      <div class="card mb-4">
+        <div class="card-header">
+          <i class="fas fa-bell"></i> Notification Settings
+        </div>
+        <div class="card-body">
+          <div class="form-check form-switch mb-3">
+            <input class="form-check-input" type="checkbox" id="email-notifications" checked>
+            <label class="form-check-label" for="email-notifications">Email Notifications</label>
+            <p class="text-muted small">Receive delivery updates via email</p>
+          </div>
+          <div class="form-check form-switch mb-3">
+            <input class="form-check-input" type="checkbox" id="sms-notifications">
+            <label class="form-check-label" for="sms-notifications">SMS Notifications</label>
+            <p class="text-muted small">Receive delivery updates via SMS</p>
+          </div>
+          <div class="form-check form-switch mb-3">
+            <input class="form-check-input" type="checkbox" id="job-alerts" checked>
+            <label class="form-check-label" for="job-alerts">New Job Alerts</label>
+            <p class="text-muted small">Receive notifications for new delivery jobs</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="card mb-4">
+        <div class="card-header">
+          <i class="fas fa-lock"></i> Password Settings
+        </div>
+        <div class="card-body">
+          <form id="password-form">
+            <div class="mb-3">
+              <label for="current-password" class="form-label">Current Password</label>
+              <input type="password" class="form-control" id="current-password" required>
+            </div>
+            <div class="mb-3">
+              <label for="new-password" class="form-label">New Password</label>
+              <input type="password" class="form-control" id="new-password" required>
+            </div>
+            <div class="mb-3">
+              <label for="confirm-password" class="form-label">Confirm New Password</label>
+              <input type="password" class="form-control" id="confirm-password" required>
+            </div>
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+              <button type="submit" class="btn btn-primary">
+                <i class="fas fa-key me-1"></i> Change Password
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+      
+      <div class="card">
+        <div class="card-header">
+          <i class="fas fa-cog"></i> Account Settings
+        </div>
+        <div class="card-body">
+          <div class="mb-3">
+            <label for="language-preference" class="form-label">Language Preference</label>
+            <select class="form-select" id="language-preference">
+              <option value="en">English</option>
+              <option value="fr">French</option>
+              <option value="es">Spanish</option>
+              <option value="yo">Yoruba</option>
+              <option value="ha">Hausa</option>
+              <option value="ig">Igbo</option>
+            </select>
+          </div>
+          
+          <div class="mb-3">
+            <label for="availability-status" class="form-label">Availability Status</label>
+            <select class="form-select" id="availability-status">
+              <option value="available">Available for Deliveries</option>
+              <option value="busy">Busy (Do Not Assign)</option>
+              <option value="away">Away (Temporarily Unavailable)</option>
+            </select>
+          </div>
+          
+          <div class="form-check form-switch mb-3">
+            <input class="form-check-input" type="checkbox" id="auto-accept" checked>
+            <label class="form-check-label" for="auto-accept">Auto-Accept Jobs</label>
+            <p class="text-muted small">Automatically accept jobs that match your criteria</p>
+          </div>
+          
+          <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+            <button class="btn btn-primary">
+              <i class="fas fa-save me-1"></i> Save Settings
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/auth-connector-enhanced.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Check if user is authenticated
+      if (!AuthConnector.isAuthenticated()) {
+        window.location.href = '/standalone-auth-enhanced.html';
+        return;
+      }
+      
+      // Get current user
+      const user = AuthConnector.getCurrentUser();
+      
+      // Verify this is a driver dashboard
+      if (user.role !== 'driver') {
+        AuthConnector.redirectToDashboard();
+        return;
+      }
+      
+      // Update user information in UI
+      document.getElementById('user-name').textContent = user.name || 'Driver';
+      document.getElementById('sidebar-user-name').textContent = user.name || 'Driver';
+      document.getElementById('profile-name').textContent = user.name || 'Driver';
+      document.getElementById('profile-email').textContent = user.email;
+      document.getElementById('profile-fullname').value = user.name || '';
+      document.getElementById('profile-email-input').value = user.email || '';
+      document.getElementById('profile-role').textContent = user.role.charAt(0).toUpperCase() + user.role.slice(1);
+      
+      // Update vehicle type
+      if (user.vehicleType) {
+        document.getElementById('vehicle-type').textContent = user.vehicleType.charAt(0).toUpperCase() + user.vehicleType.slice(1);
+        if (document.getElementById('vehicle-type-info')) {
+          document.getElementById('vehicle-type-info').textContent = user.vehicleType.charAt(0).toUpperCase() + user.vehicleType.slice(1);
+        }
+      }
+      
+      // Update user avatar if available
+      if (user.profileImageUrl) {
+        document.getElementById('user-avatar').src = user.profileImageUrl;
+        document.getElementById('profile-image').src = user.profileImageUrl;
+      } else {
+        // Create avatar from name or email
+        const nameInitial = user.name ? user.name.charAt(0) : user.email.charAt(0);
+        const avatarUrl = `https://ui-avatars.com/api/?name=${nameInitial.toUpperCase()}&background=3498db&color=fff`;
+        document.getElementById('user-avatar').src = avatarUrl;
+        document.getElementById('profile-image').src = avatarUrl;
+      }
+      
+      // Section navigation
+      const navLinks = document.querySelectorAll('.nav-link[data-section]');
+      const contentSections = document.querySelectorAll('.content-section');
+      
+      navLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+          e.preventDefault();
+          
+          // Remove active class from all links and sections
+          navLinks.forEach(l => l.classList.remove('active'));
+          contentSections.forEach(s => s.classList.remove('active'));
+          
+          // Add active class to clicked link
+          this.classList.add('active');
+          
+          // Show corresponding section
+          const sectionId = this.getAttribute('data-section');
+          document.getElementById(sectionId).classList.add('active');
+        });
+      });
+      
+      // Quick Action buttons
+      const quickActionButtons = document.querySelectorAll('.quick-action-btn');
+      
+      quickActionButtons.forEach(button => {
+        button.addEventListener('click', function() {
+          const action = this.getAttribute('data-action');
+          
+          switch (action) {
+            case 'find-deliveries':
+              // Show available jobs section
+              navLinks.forEach(l => l.classList.remove('active'));
+              contentSections.forEach(s => s.classList.remove('active'));
+              document.querySelector('.nav-link[data-section="available-section"]').classList.add('active');
+              document.getElementById('available-section').classList.add('active');
+              break;
+              
+            case 'start-route':
+              alert('Route started! Navigate to your first delivery location.');
+              break;
+              
+            case 'view-history':
+              // Show deliveries section
+              navLinks.forEach(l => l.classList.remove('active'));
+              contentSections.forEach(s => s.classList.remove('active'));
+              document.querySelector('.nav-link[data-section="deliveries-section"]').classList.add('active');
+              document.getElementById('deliveries-section').classList.add('active');
+              break;
+          }
+        });
+      });
+      
+      // Logout functionality
+      const logoutButtons = document.querySelectorAll('#logout-btn, #sidebar-logout-btn');
+      
+      logoutButtons.forEach(button => {
+        button.addEventListener('click', async function(e) {
+          e.preventDefault();
+          
+          try {
+            await AuthConnector.logout();
+            window.location.href = '/standalone-auth-enhanced.html';
+          } catch (error) {
+            console.error('Logout error:', error);
+            alert('An error occurred during logout. Please try again.');
+          }
+        });
+      });
+      
+      // Range input display values
+      const distanceRange = document.getElementById('distance-range');
+      const distanceValue = document.getElementById('distance-value');
+      
+      if (distanceRange && distanceValue) {
+        distanceRange.addEventListener('input', function() {
+          distanceValue.textContent = this.value + ' km';
+        });
+      }
+      
+      const minPayRange = document.getElementById('min-pay');
+      const minPayValue = document.getElementById('min-pay-value');
+      
+      if (minPayRange && minPayValue) {
+        minPayRange.addEventListener('input', function() {
+          minPayValue.textContent = '₦' + this.value;
+        });
+      }
+      
+      // Mock fetch deliveries
+      function fetchDeliveries() {
+        // This would normally be an API call
+        const mockDeliveries = [
+          {
+            id: 1,
+            name: 'Document Delivery',
+            from: 'Lagos Central',
+            to: 'Victoria Island',
+            status: 'in-progress',
+            date: 'May 24, 2023',
+            eta: '2:30 PM'
+          },
+          {
+            id: 2,
+            name: 'Electronics Package',
+            from: 'Ikeja',
+            to: 'Lekki Phase 1',
+            status: 'pending',
+            date: 'May 25, 2023',
+            eta: '11:00 AM'
+          },
+          {
+            id: 3,
+            name: 'Furniture Delivery',
+            from: 'Surulere',
+            to: 'Yaba',
+            status: 'completed',
+            date: 'May 23, 2023',
+            eta: 'Delivered'
+          },
+          {
+            id: 4,
+            name: 'Grocery Delivery',
+            from: 'Ajah',
+            to: 'Victoria Island',
+            status: 'completed',
+            date: 'May 22, 2023',
+            eta: 'Delivered'
+          }
+        ];
+        
+        // Update statistics
+        document.getElementById('total-deliveries-count').textContent = mockDeliveries.length;
+        document.getElementById('in-progress-count').textContent = mockDeliveries.filter(d => d.status === 'in-progress').length;
+        document.getElementById('completed-count').textContent = mockDeliveries.filter(d => d.status === 'completed').length;
+        
+        // Render deliveries list
+        renderDeliveriesList(mockDeliveries);
+        
+        // Render upcoming deliveries
+        renderUpcomingDeliveries(mockDeliveries.filter(d => d.status !== 'completed'));
+      }
+      
+      // Render deliveries list
+      function renderDeliveriesList(deliveries) {
+        if (!document.getElementById('deliveries-list-container')) return;
+        
+        if (deliveries.length === 0) {
+          document.getElementById('deliveries-list-container').innerHTML = `
+            <div class="alert alert-info">
+              <i class="fas fa-info-circle me-2"></i>
+              You don't have any deliveries yet.
+            </div>
+          `;
+          return;
+        }
+        
+        let html = '';
+        
+        deliveries.forEach(delivery => {
+          let statusClass = '';
+          let statusText = delivery.status;
+          
+          switch (delivery.status) {
+            case 'pending':
+              statusClass = 'status-pending';
+              statusText = 'Pending';
+              break;
+            case 'in-progress':
+              statusClass = 'status-transit';
+              statusText = 'In Progress';
+              break;
+            case 'completed':
+              statusClass = 'status-delivered';
+              statusText = 'Completed';
+              break;
+          }
+          
+          html += `
+            <div class="package-item">
+              <div class="package-item-header">
+                <h5 class="package-item-name">${delivery.name}</h5>
+                <span class="package-status ${statusClass}">${statusText}</span>
+              </div>
+              <div class="package-item-details">
+                <div class="package-item-detail">
+                  <i class="fas fa-map-marker-alt"></i>
+                  <span>From: ${delivery.from}</span>
+                </div>
+                <div class="package-item-detail">
+                  <i class="fas fa-map-marker"></i>
+                  <span>To: ${delivery.to}</span>
+                </div>
+                <div class="package-item-detail">
+                  <i class="fas fa-calendar-alt"></i>
+                  <span>${delivery.date}</span>
+                </div>
+                <div class="package-item-detail">
+                  <i class="fas fa-clock"></i>
+                  <span>ETA: ${delivery.eta}</span>
+                </div>
+              </div>
+              <div class="mt-2">
+                ${delivery.status === 'pending' ? `
+                  <button class="btn btn-sm btn-primary me-2">
+                    <i class="fas fa-play me-1"></i> Start Delivery
+                  </button>
+                ` : ''}
+                ${delivery.status === 'in-progress' ? `
+                  <button class="btn btn-sm btn-success me-2">
+                    <i class="fas fa-check me-1"></i> Complete
+                  </button>
+                ` : ''}
+                <button class="btn btn-sm btn-outline-primary">
+                  <i class="fas fa-info-circle me-1"></i> Details
+                </button>
+              </div>
+            </div>
+          `;
+        });
+        
+        document.getElementById('deliveries-list-container').innerHTML = html;
+      }
+      
+      // Render upcoming deliveries
+      function renderUpcomingDeliveries(deliveries) {
+        if (!document.getElementById('upcoming-deliveries-container')) return;
+        
+        if (deliveries.length === 0) {
+          document.getElementById('upcoming-deliveries-container').innerHTML = `
+            <div class="alert alert-info">
+              <i class="fas fa-info-circle me-2"></i>
+              You don't have any upcoming deliveries.
+            </div>
+          `;
+          return;
+        }
+        
+        let html = '';
+        
+        deliveries.forEach(delivery => {
+          let statusClass = '';
+          let statusText = delivery.status;
+          
+          switch (delivery.status) {
+            case 'pending':
+              statusClass = 'status-pending';
+              statusText = 'Pending';
+              break;
+            case 'in-progress':
+              statusClass = 'status-transit';
+              statusText = 'In Progress';
+              break;
+          }
+          
+          html += `
+            <div class="package-card card">
+              <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <h5 class="card-title mb-0">${delivery.name}</h5>
+                  <span class="package-status ${statusClass}">${statusText}</span>
+                </div>
+                <p class="card-text mb-1">
+                  <i class="fas fa-map-marker-alt text-primary me-2"></i>
+                  <span>From: ${delivery.from}</span>
+                </p>
+                <p class="card-text mb-1">
+                  <i class="fas fa-map-marker text-danger me-2"></i>
+                  <span>To: ${delivery.to}</span>
+                </p>
+                <div class="d-flex justify-content-between align-items-center mt-3">
+                  <span class="package-date">
+                    <i class="fas fa-calendar-alt me-1"></i>
+                    ${delivery.date}
+                  </span>
+                  <span class="package-eta">
+                    <i class="fas fa-clock me-1"></i>
+                    ETA: ${delivery.eta}
+                  </span>
+                </div>
+                <div class="mt-3">
+                  ${delivery.status === 'pending' ? `
+                    <button class="btn btn-sm btn-primary w-100">
+                      <i class="fas fa-play me-1"></i> Start Delivery
+                    </button>
+                  ` : ''}
+                  ${delivery.status === 'in-progress' ? `
+                    <button class="btn btn-sm btn-success w-100">
+                      <i class="fas fa-check me-1"></i> Complete Delivery
+                    </button>
+                  ` : ''}
+                </div>
+              </div>
+            </div>
+          `;
+        });
+        
+        document.getElementById('upcoming-deliveries-container').innerHTML = html;
+      }
+      
+      // Fetch deliveries
+      fetchDeliveries();
+      
+      // Also fetch current user from API to get latest data
+      async function fetchCurrentUser() {
+        try {
+          const result = await AuthConnector.fetchCurrentUser();
+          
+          if (result.success) {
+            // Update UI with latest user data
+            document.getElementById('user-name').textContent = result.user.name || 'Driver';
+            document.getElementById('sidebar-user-name').textContent = result.user.name || 'Driver';
+            document.getElementById('profile-name').textContent = result.user.name || 'Driver';
+            document.getElementById('profile-email').textContent = result.user.email;
+            document.getElementById('profile-fullname').value = result.user.name || '';
+            document.getElementById('profile-email-input').value = result.user.email || '';
+            
+            // Update vehicle type
+            if (result.user.vehicleType) {
+              document.getElementById('vehicle-type').textContent = result.user.vehicleType.charAt(0).toUpperCase() + result.user.vehicleType.slice(1);
+              if (document.getElementById('vehicle-type-info')) {
+                document.getElementById('vehicle-type-info').textContent = result.user.vehicleType.charAt(0).toUpperCase() + result.user.vehicleType.slice(1);
+              }
+            }
+            
+            // Update avatar if available
+            if (result.user.profileImageUrl) {
+              document.getElementById('user-avatar').src = result.user.profileImageUrl;
+              document.getElementById('profile-image').src = result.user.profileImageUrl;
+            }
+          }
+        } catch (error) {
+          console.error('Fetch current user error:', error);
+        }
+      }
+      
+      // Fetch current user
+      fetchCurrentUser();
+    });
+  </script>
+</body>
+</html>
