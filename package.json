@@ -1,0 +1,23 @@
+{
+  "name": "myngenda-delivery-service",
+  "version": "1.0.0",
+  "description": "Myngenda Package Delivery Service with Real User Accounts",
+  "main": "server-real-data.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server-real-data.js",
+    "init-db": "node server/init-db.js",
+    "dev": "nodemon server-real-data.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "drizzle-orm": "^0.29.5",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.2",
+    "pg": "^8.11.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.3"
+  }
+}
