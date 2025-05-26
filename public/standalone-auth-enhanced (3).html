@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Myngenda - Authentication</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary-color: #2ecc71;
+      --primary-dark: #27ae60;
+      --secondary-color: #3498db;
+      --secondary-dark: #2980b9;
+      --accent-color: #f39c12;
+      --text-color: #333;
+      --light-bg: #f8f9fa;
+      --border-radius: 8px;
+      --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      --transition: all 0.3s ease;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f5f5f5;
+      color: var(--text-color);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .navbar-brand {
+      font-weight: bold;
+      font-size: 1.5rem;
+    }
+    
+    .navbar-brand span {
+      color: var(--primary-color);
+    }
+    
+    .auth-container {
+      max-width: 480px;
+      margin: 2rem auto;
+      background: white;
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      padding: 2rem;
+    }
+    
+    .auth-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    
+    .auth-header img {
+      width: 120px;
+      margin-bottom: 1rem;
+    }
+    
+    .auth-header h2 {
+      font-weight: 600;
+      color: var(--text-color);
+    }
+    
+    .auth-tabs {
+      display: flex;
+      margin-bottom: 1.5rem;
+    }
+    
+    .auth-tab {
+      flex: 1;
+      text-align: center;
+      padding: 0.75rem;
+      cursor: pointer;
+      border-bottom: 2px solid #e9ecef;
+      font-weight: 500;
+      transition: var(--transition);
+    }
+    
+    .auth-tab.active {
+      border-bottom: 2px solid var(--primary-color);
+      color: var(--primary-color);
+    }
+    
+    .form-content {
+      display: none;
+    }
+    
+    .form-content.active {
+      display: block;
+    }
+    
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+    
+    .form-label {
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+    }
+    
+    .form-control {
+      padding: 0.75rem;
+      border-radius: var(--border-radius);
+      border: 1px solid #ced4da;
+      transition: var(--transition);
+    }
+    
+    .form-control:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 0.25rem rgba(46, 204, 113, 0.25);
+    }
+    
+    .btn-primary {
+      background-color: var(--primary-color);
+      border-color: var(--primary-color);
+      padding: 0.75rem 1.5rem;
+      font-weight: 500;
+      border-radius: var(--border-radius);
+      transition: var(--transition);
+    }
+    
+    .btn-primary:hover, .btn-primary:focus {
+      background-color: var(--primary-dark);
+      border-color: var(--primary-dark);
+    }
+    
+    .btn-secondary {
+      background-color: var(--secondary-color);
+      border-color: var(--secondary-color);
+      padding: 0.75rem 1.5rem;
+      font-weight: 500;
+      border-radius: var(--border-radius);
+      transition: var(--transition);
+    }
+    
+    .btn-secondary:hover, .btn-secondary:focus {
+      background-color: var(--secondary-dark);
+      border-color: var(--secondary-dark);
+    }
+    
+    .btn-google {
+      background-color: #db4437;
+      border-color: #db4437;
+      color: white;
+    }
+    
+    .btn-google:hover, .btn-google:focus {
+      background-color: #c53929;
+      border-color: #c53929;
+      color: white;
+    }
+    
+    .account-type-container {
+      margin-bottom: 1.5rem;
+    }
+    
+    .password-wrapper {
+      position: relative;
+    }
+    
+    .password-toggle {
+      position: absolute;
+      top: 50%;
+      right: 10px;
+      transform: translateY(-50%);
+      cursor: pointer;
+      color: #6c757d;
+    }
+    
+    .form-text {
+      font-size: 0.875rem;
+      color: #6c757d;
+    }
+    
+    .text-danger {
+      color: #dc3545;
+    }
+    
+    .text-success {
+      color: #28a745;
+    }
+    
+    .password-strength {
+      margin-top: 0.5rem;
+      height: 5px;
+      background-color: #e9ecef;
+      border-radius: 5px;
+      overflow: hidden;
+    }
+    
+    .password-strength-meter {
+      height: 100%;
+      width: 0;
+      transition: width 0.3s;
+    }
+    
+    .strength-weak {
+      background-color: #dc3545;
+      width: 33.33%;
+    }
+    
+    .strength-medium {
+      background-color: #ffc107;
+      width: 66.66%;
+    }
+    
+    .strength-strong {
+      background-color: #28a745;
+      width: 100%;
+    }
+    
+    .vehicle-type-container {
+      display: none;
+      margin-top: 1rem;
+    }
+    
+    .alert {
+      display: none;
+      margin-bottom: 1.5rem;
+    }
+    
+    /* Animation */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .form-content.active {
+      animation: fadeIn 0.3s ease forwards;
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 576px) {
+      .auth-container {
+        margin: 1rem;
+        padding: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+    <div class="container">
+      <a class="navbar-brand" href="/">
+        <img src="https://raw.githubusercontent.com/yourusername/myngenda/main/assets/logo.png" alt="Myngenda Logo" height="35">
+        Myngenda <span>Delivery Services</span>
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="/">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#about">About</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#services">Services</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#contact">Contact</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Authentication Container -->
+  <div class="container py-5">
+    <div class="auth-container">
+      <div class="auth-header">
+        <img src="https://raw.githubusercontent.com/yourusername/myngenda/main/assets/icon.png" alt="Myngenda Icon">
+        <h2 id="auth-title">Welcome to Myngenda</h2>
+      </div>
+      
+      <div class="alert alert-danger" id="error-alert" role="alert"></div>
+      <div class="alert alert-success" id="success-alert" role="alert"></div>
+      
+      <div class="auth-tabs">
+        <div class="auth-tab active" id="login-tab">Login</div>
+        <div class="auth-tab" id="register-tab">Register</div>
+      </div>
+      
+      <!-- Login Form -->
+      <div class="form-content active" id="login-form">
+        <form id="login-form-element">
+          <div class="form-group">
+            <label for="login-email" class="form-label">Email</label>
+            <input type="email" class="form-control" id="login-email" name="email" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="login-password" class="form-label">Password</label>
+            <div class="password-wrapper">
+              <input type="password" class="form-control" id="login-password" name="password" required>
+              <span class="password-toggle" id="login-password-toggle">
+                <i class="fas fa-eye"></i>
+              </span>
+            </div>
+          </div>
+          
+          <div class="d-grid gap-2 mt-4">
+            <button type="submit" class="btn btn-primary">Login</button>
+          </div>
+          
+          <div class="text-center mt-3">
+            <a href="#" class="text-decoration-none">Forgot Password?</a>
+          </div>
+        </form>
+      </div>
+      
+      <!-- Register Form -->
+      <div class="form-content" id="register-form">
+        <form id="register-form-element">
+          <div class="form-group account-type-container">
+            <label class="form-label">Account Type</label>
+            <div class="d-flex gap-2">
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="accountType" id="customer-type" value="customer" checked>
+                <label class="form-check-label" for="customer-type">
+                  Customer
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="accountType" id="driver-type" value="driver">
+                <label class="form-check-label" for="driver-type">
+                  Driver
+                </label>
+              </div>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="register-name" class="form-label">Full Name</label>
+            <input type="text" class="form-control" id="register-name" name="name" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="register-email" class="form-label">Email</label>
+            <input type="email" class="form-control" id="register-email" name="email" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="register-password" class="form-label">Password</label>
+            <div class="password-wrapper">
+              <input type="password" class="form-control" id="register-password" name="password" required>
+              <span class="password-toggle" id="register-password-toggle">
+                <i class="fas fa-eye"></i>
+              </span>
+            </div>
+            <div class="password-strength">
+              <div class="password-strength-meter" id="password-strength-meter"></div>
+            </div>
+            <small id="password-strength-text" class="form-text"></small>
+          </div>
+          
+          <div class="form-group vehicle-type-container" id="vehicle-type-container">
+            <label for="vehicle-type" class="form-label">Vehicle Type</label>
+            <select class="form-select" id="vehicle-type" name="vehicleType">
+              <option value="">Select Vehicle Type</option>
+              <option value="walk">Walk</option>
+              <option value="bike">Bike</option>
+              <option value="motorcycle">Motorcycle</option>
+              <option value="small_van">Small Van</option>
+              <option value="van">Van</option>
+              <option value="small_truck">Small Truck</option>
+              <option value="truck">Truck</option>
+            </select>
+          </div>
+          
+          <div class="d-grid gap-2 mt-4">
+            <button type="submit" class="btn btn-primary">Register</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/auth-connector-enhanced.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Tab switching
+      const loginTab = document.getElementById('login-tab');
+      const registerTab = document.getElementById('register-tab');
+      const loginForm = document.getElementById('login-form');
+      const registerForm = document.getElementById('register-form');
+      const authTitle = document.getElementById('auth-title');
+      
+      loginTab.addEventListener('click', function() {
+        loginTab.classList.add('active');
+        registerTab.classList.remove('active');
+        loginForm.classList.add('active');
+        registerForm.classList.remove('active');
+        authTitle.textContent = 'Welcome Back';
+      });
+      
+      registerTab.addEventListener('click', function() {
+        registerTab.classList.add('active');
+        loginTab.classList.remove('active');
+        registerForm.classList.add('active');
+        loginForm.classList.remove('active');
+        authTitle.textContent = 'Create Your Account';
+      });
+      
+      // Password visibility toggle
+      const loginPasswordToggle = document.getElementById('login-password-toggle');
+      const loginPassword = document.getElementById('login-password');
+      
+      loginPasswordToggle.addEventListener('click', function() {
+        const type = loginPassword.getAttribute('type') === 'password' ? 'text' : 'password';
+        loginPassword.setAttribute('type', type);
+        loginPasswordToggle.innerHTML = type === 'password' ? '<i class="fas fa-eye"></i>' : '<i class="fas fa-eye-slash"></i>';
+      });
+      
+      const registerPasswordToggle = document.getElementById('register-password-toggle');
+      const registerPassword = document.getElementById('register-password');
+      
+      registerPasswordToggle.addEventListener('click', function() {
+        const type = registerPassword.getAttribute('type') === 'password' ? 'text' : 'password';
+        registerPassword.setAttribute('type', type);
+        registerPasswordToggle.innerHTML = type === 'password' ? '<i class="fas fa-eye"></i>' : '<i class="fas fa-eye-slash"></i>';
+      });
+      
+      // Password strength meter
+      const passwordStrengthMeter = document.getElementById('password-strength-meter');
+      const passwordStrengthText = document.getElementById('password-strength-text');
+      
+      registerPassword.addEventListener('input', function() {
+        const password = registerPassword.value;
+        let strength = 0;
+        
+        if (password.length >= 8) strength += 1;
+        if (/[A-Z]/.test(password) && /[a-z]/.test(password)) strength += 1;
+        if (/[0-9]/.test(password)) strength += 1;
+        if (/[^A-Za-z0-9]/.test(password)) strength += 1;
+        
+        passwordStrengthMeter.className = 'password-strength-meter';
+        
+        if (password.length === 0) {
+          passwordStrengthMeter.style.width = '0';
+          passwordStrengthText.textContent = '';
+        } else if (strength < 2) {
+          passwordStrengthMeter.classList.add('strength-weak');
+          passwordStrengthText.textContent = 'Weak password';
+          passwordStrengthText.className = 'form-text text-danger';
+        } else if (strength < 4) {
+          passwordStrengthMeter.classList.add('strength-medium');
+          passwordStrengthText.textContent = 'Medium password';
+          passwordStrengthText.className = 'form-text text-warning';
+        } else {
+          passwordStrengthMeter.classList.add('strength-strong');
+          passwordStrengthText.textContent = 'Strong password';
+          passwordStrengthText.className = 'form-text text-success';
+        }
+      });
+      
+      // Show/hide vehicle type for drivers
+      const accountTypeRadios = document.querySelectorAll('input[name="accountType"]');
+      const vehicleTypeContainer = document.getElementById('vehicle-type-container');
+      
+      accountTypeRadios.forEach(radio => {
+        radio.addEventListener('change', function() {
+          if (radio.value === 'driver') {
+            vehicleTypeContainer.style.display = 'block';
+          } else {
+            vehicleTypeContainer.style.display = 'none';
+          }
+        });
+      });
+      
+      // Error and success alerts
+      const errorAlert = document.getElementById('error-alert');
+      const successAlert = document.getElementById('success-alert');
+      
+      function showError(message) {
+        errorAlert.textContent = message;
+        errorAlert.style.display = 'block';
+        setTimeout(() => {
+          errorAlert.style.display = 'none';
+        }, 5000);
+      }
+      
+      function showSuccess(message) {
+        successAlert.textContent = message;
+        successAlert.style.display = 'block';
+        setTimeout(() => {
+          successAlert.style.display = 'none';
+        }, 5000);
+      }
+      
+      // Handle login form submission
+      const loginFormElement = document.getElementById('login-form-element');
+      
+      loginFormElement.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const email = document.getElementById('login-email').value;
+        const password = document.getElementById('login-password').value;
+        
+        if (!email || !password) {
+          showError('Please fill in all fields');
+          return;
+        }
+        
+        try {
+          const result = await AuthConnector.login(email, password);
+          
+          if (result.success) {
+            showSuccess('Login successful!');
+            
+            // Redirect to appropriate dashboard based on role
+            setTimeout(() => {
+              AuthConnector.redirectToDashboard();
+            }, 1000);
+          } else {
+            showError(result.message || 'Login failed. Please check your credentials.');
+          }
+        } catch (error) {
+          console.error('Login error:', error);
+          showError('An error occurred during login. Please try again.');
+        }
+      });
+      
+      // Handle register form submission
+      const registerFormElement = document.getElementById('register-form-element');
+      
+      registerFormElement.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const name = document.getElementById('register-name').value;
+        const email = document.getElementById('register-email').value;
+        const password = document.getElementById('register-password').value;
+        const role = document.querySelector('input[name="accountType"]:checked').value;
+        let vehicleType = null;
+        
+        if (role === 'driver') {
+          vehicleType = document.getElementById('vehicle-type').value;
+          if (!vehicleType) {
+            showError('Please select a vehicle type');
+            return;
+          }
+        }
+        
+        if (!name || !email || !password) {
+          showError('Please fill in all required fields');
+          return;
+        }
+        
+        if (password.length < 6) {
+          showError('Password must be at least 6 characters long');
+          return;
+        }
+        
+        try {
+          const userData = {
+            name,
+            email,
+            password,
+            role,
+            vehicleType
+          };
+          
+          const result = await AuthConnector.register(userData);
+          
+          if (result.success) {
+            showSuccess('Registration successful!');
+            
+            // Redirect to appropriate dashboard based on role
+            setTimeout(() => {
+              AuthConnector.redirectToDashboard();
+            }, 1000);
+          } else {
+            showError(result.message || 'Registration failed. Please try again.');
+          }
+        } catch (error) {
+          console.error('Registration error:', error);
+          showError('An error occurred during registration. Please try again.');
+        }
+      });
+      
+      // Check for redirect parameters
+      const urlParams = new URLSearchParams(window.location.search);
+      const action = urlParams.get('action');
+      const message = urlParams.get('message');
+      
+      if (action === 'register') {
+        registerTab.click();
+      }
+      
+      if (message) {
+        showError(decodeURIComponent(message));
+      }
+      
+      // If user is already logged in, redirect to dashboard
+      if (AuthConnector.isAuthenticated()) {
+        AuthConnector.redirectToDashboard();
+      }
+    });
+  </script>
+</body>
+</html>
